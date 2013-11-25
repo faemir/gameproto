@@ -24,8 +24,6 @@ public class GUIWindow
 /// </summary>
 public class GUIManager : Singleton<GUIManager> 
 {
-	public Transform server;
-
 	public int buttonHeight = 25;
 	public GUIWindow mainMenu = new GUIWindow();
 	public GUIWindow startServer = new GUIWindow();
@@ -74,7 +72,7 @@ public class GUIManager : Singleton<GUIManager>
 	{
 		/* Main Menu
 		 * Resume Game (if Client)
-		 * Start Server (if no connection)
+		 * Start Server
 		 * Browse Servers
 		 * Options
 		 * Quit
@@ -92,11 +90,10 @@ public class GUIManager : Singleton<GUIManager>
 		}
 
 		// Start server
-		if (!Network.isClient && !Network.isServer)
-		{
-			if ( GUILayout.Button ("Host Game", GUILayout.Height(buttonHeight)) )
-				state = GUIState.StartServer;
-		}
+		GUILayout.Space(5);
+		if ( GUILayout.Button ("Host Game", GUILayout.Height(buttonHeight)) )
+			state = GUIState.StartServer;
+		
 
 		// Browse Servers
 		GUILayout.Space(5);
@@ -134,7 +131,8 @@ public class GUIManager : Singleton<GUIManager>
 		if ( GUILayout.Button("Start Server", GUILayout.Height(buttonHeight)) )
 		{
 			PlayerPrefs.SetString("serverName", serverName);
-			Instantiate(server, Vector3.zero, Quaternion.identity);
+			Server.Instance.StartServer();
+			Client.Instance.StartClient();
 			state = GUIState.NoWindows;
 		}
 
@@ -229,6 +227,23 @@ public class GUIManager : Singleton<GUIManager>
 		refreshingHostData = false;
 	}
 
+	string[] playerNames;
+	void wPlayerList(int windowID)
+	{
+		// Gap for header
+		GUILayout.Space(15);
+
+		playerNames = Client.Instance.GetPlayerNames();
+		if (playerNames != null)
+		{
+			for (int i = 0; i < playerNames.Length; i++)
+			{
+				GUILayout.Space (5);
+				GUILayout.Label (playerNames[i]);
+			}
+		}
+	}
+
 	/// <summary>
 	/// Called every fixed update.
 	/// Decide which window to draw.
@@ -241,7 +256,7 @@ public class GUIManager : Singleton<GUIManager>
 		{
 			Screen.lockCursor = true;	// hide cursor whilst no GUI is shown
 
-			if ( Input.GetKey (KeyCode.Escape) )
+			if ( Input.GetKeyDown(KeyCode.Escape) )
 			{
 				state = GUIState.MainMenu;
 			}
@@ -250,6 +265,19 @@ public class GUIManager : Singleton<GUIManager>
 		{
 			Screen.lockCursor = false;
 		}
+
+		if ( Network.peerType != NetworkPeerType.Disconnected )
+		{
+			if ( Input.GetKeyDown(KeyCode.Tab) && state == GUIState.NoWindows)
+			{
+				state = GUIState.PlayerList;
+			}
+
+			if (Input.GetKeyUp(KeyCode.Tab))
+				state = GUIState.NoWindows;
+		}
+
+
 
 	}
 
@@ -317,6 +345,7 @@ public class GUIManager : Singleton<GUIManager>
 			GUILayout.Window (1, windowSize, wOptions, "Options");
 			break;
 		case GUIState.PlayerList:
+			GUILayout.Window (1, windowSize, wPlayerList, "Player List");
 			break;
 		case GUIState.ChatLog:
 			break;

@@ -7,12 +7,22 @@ public class Server : Singleton<Server>
 	private string registeredServerName = "DUMMYSERVERNAME";
 	private string serverName = "Default Server Name";
 
-	void Awake ()
+
+
+	public void StartServer()
 	{
+		if (Network.isServer || Network.isClient)
+		{
+			Debug.Log("StartServer call whilst already connected." + 
+			          "Destroy current connection.");
+			Network.Disconnect(200);
+			MasterServer.UnregisterHost();
+		}
+
 		serverName = PlayerPrefs.GetString ("serverName");
 		if (serverName == "")
-				serverName = "Default Server Name";
-
+			serverName = "Default Server Name";
+		
 		Network.InitializeServer (16, 25002, false);
 		MasterServer.RegisterHost (registeredServerName, serverName);
 	}
