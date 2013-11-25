@@ -85,7 +85,7 @@ public class GUIManager : Singleton<GUIManager>
 
 
 		// Resume game
-		if (Network.isClient)
+		if (Network.isClient || Network.isServer)
 		{
 			if ( GUILayout.Button ("Resume Game", GUILayout.Height (buttonHeight)) )
 				state = GUIState.NoWindows;
@@ -135,7 +135,7 @@ public class GUIManager : Singleton<GUIManager>
 		{
 			PlayerPrefs.SetString("serverName", serverName);
 			Instantiate(server, Vector3.zero, Quaternion.identity);
-			state = GUIState.MainMenu;
+			state = GUIState.NoWindows;
 		}
 
 		// Back to main menu button
@@ -236,10 +236,19 @@ public class GUIManager : Singleton<GUIManager>
 	void FixedUpdate()
 	{
 
-		// Show MainMenu if we aren't a client or server.
+		// If there's no GUI being displayed, then check for input.
 		if (state == GUIState.NoWindows)
 		{
-			state = GUIState.MainMenu;
+			Screen.lockCursor = true;	// hide cursor whilst no GUI is shown
+
+			if ( Input.GetKey (KeyCode.Escape) )
+			{
+				state = GUIState.MainMenu;
+			}
+		}
+		else
+		{
+			Screen.lockCursor = false;
 		}
 
 	}
