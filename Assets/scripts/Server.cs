@@ -1,13 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(NetworkView))]
 public class Server : Singleton<Server>
 {
 
-	private string registeredServerName = "DUMMYSERVERNAME";
+	public string registeredServerName
+	{
+		get; private set;
+	}
 	private string serverName = "Default Server Name";
 
 
+	void Awake()
+	{
+		networkView.stateSynchronization = NetworkStateSynchronization.Off;
+		registeredServerName = "DUMMYSERVERNAME";
+	}
 
 	public void StartServer()
 	{
@@ -25,6 +34,7 @@ public class Server : Singleton<Server>
 		
 		Network.InitializeServer (16, 25002, false);
 		MasterServer.RegisterHost (registeredServerName, serverName);
+		Debug.Log ("Server started.");
 	}
 
 	void OnMasterServerEvent(MasterServerEvent masterServerEvent)

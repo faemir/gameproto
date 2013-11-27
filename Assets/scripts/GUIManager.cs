@@ -184,7 +184,11 @@ public class GUIManager : Singleton<GUIManager>
 			{
 				GUILayout.Space(5);
 				if ( GUILayout.Button(hostData[i].gameName, GUILayout.Height (buttonHeight)) )
+				{
+					Client.Instance.StartClient();
+					Debug.Log ("Connecting to..." + hostData[i].gameName);	
 					Network.Connect(hostData[i]);
+				}
 			}
 
 			if ( hostData.Length == 0 )
@@ -210,7 +214,7 @@ public class GUIManager : Singleton<GUIManager>
 	{
 		refreshingHostData = true;
 		Debug.Log("Refreshing host list...");
-		MasterServer.RequestHostList("DUMMYSERVERNAME");
+		MasterServer.RequestHostList(Server.Instance.registeredServerName);
 
 		float timeToWaitForServers = 2.5f;
 		float timeToEnd = Time.time + timeToWaitForServers;

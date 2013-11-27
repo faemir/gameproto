@@ -2,18 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(NetworkView))]
 public class Client : Singleton<Client> 
 {
 	private List<string> playerNames = new List<string>();
 
+	void Awake()
+	{
+		networkView.stateSynchronization = NetworkStateSynchronization.Off;
+	}
+
 	public void StartClient()
 	{
-		Debug.Log("Client created.");
+		Debug.Log("Running Client.");
 	}
 
 	public string[] GetPlayerNames()
 	{
-		string[] names = new string[0];
+		string[] names = new string[playerNames.Count];
 		playerNames.CopyTo(names);
 		return names;
 	}
@@ -31,6 +37,7 @@ public class Client : Singleton<Client>
 
 	void OnConnectedToServer()
 	{
+
 		networkView.RPC ("AddPlayerNameToList", RPCMode.AllBuffered, PlayerPrefs.GetString("playerName"));
 	}
 
