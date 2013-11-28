@@ -1,6 +1,4 @@
 gameproto
 =========
 
-Initial prototypes of game ideas
-
-New prototype? **new branch**
+Dave had an idea for a top-down jousting game. 
