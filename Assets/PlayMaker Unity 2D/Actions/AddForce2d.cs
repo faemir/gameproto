@@ -1,65 +1,59 @@
-// (c) Copyright HutongGames, LLC 2010-2013. All rights reserved.
+﻿// (c) Copyright HutongGames, LLC 2010-2013. All rights reserved.
 
 using UnityEngine;
 
 namespace HutongGames.PlayMaker.Actions
 {
-	[ActionCategory("Physics 2D")]
-	[Tooltip("Adds a force to a rigidbody 2D Game Object. Use Vector2 variable and/or Float variables for each axis.")]
-	public class AddForce2D : FsmStateAction
+	[ActionCategory("Physics 2d")]
+	[Tooltip("Adds a 2d force to a Game Object. Use Vector2 variable and/or Float variables for each axis.")]
+	public class AddForce2d : RigidBody2dActionBase
 	{
 		[RequiredField]
 		[CheckForComponent(typeof(Rigidbody2D))]
-        [Tooltip("The GameObject to apply the force to.")]
+		[Tooltip("The GameObject to apply the force to.")]
 		public FsmOwnerDefault gameObject;
 		
 		[UIHint(UIHint.Variable)]
-		[Tooltip("Optionally apply the force at a position on the object. This will also add some torque. The position is often returned from MousePick or GetCollisionInfo actions.")]
+		[Tooltip("Optionally apply the force at a position on the object. This will also add some torque. The position is often returned from MousePick or GetCollision2dInfo actions.")]
 		public FsmVector2 atPosition;
 		
 		[UIHint(UIHint.Variable)]
-		[Tooltip("A Vector2 force to add. Optionally override any axis with the X, Y, parameters.")]
+		[Tooltip("A Vector2 force to add. Optionally override any axis with the X, Y parameters.")]
 		public FsmVector2 vector;
-
-        [Tooltip("Force along the X axis. To leave unchanged, set to 'None'.")]
+		
+		[Tooltip("Force along the X axis. To leave unchanged, set to 'None'.")]
 		public FsmFloat x;
-
-        [Tooltip("Force along the Y axis. To leave unchanged, set to 'None'.")]
+		
+		[Tooltip("Force along the Y axis. To leave unchanged, set to 'None'.")]
 		public FsmFloat y;
+		
+		[Tooltip("Repeat every frame while the state is active.")]
+		public bool everyFrame;
 
-        //[Tooltip("Force along the Z axis. To leave unchanged, set to 'None'.")]
-		//public FsmFloat z;
-
-        [Tooltip("Apply the force in world or local space.")]
-		public Space space;
-
-        //[Tooltip("The type of force to apply. See Unity Physics docs.")]
-        //public ForceMode forceMode;
-
-        [Tooltip("Repeat every frame while the state is active.")]
-        public bool everyFrame;
 
 		public override void Reset()
 		{
 			gameObject = null;
 			atPosition = new FsmVector2 { UseVariable = true };
 			vector = null;
+
 			// default axis to variable dropdown with None selected.
 			x = new FsmFloat { UseVariable = true };
 			y = new FsmFloat { UseVariable = true };
-			//z = new FsmFloat { UseVariable = true };
-			space = Space.World;
-			//forceMode = ForceMode.Force;
+
 			everyFrame = false;
 		}
 
-        public override void Awake()
-        {
-            Fsm.HandleFixedUpdate = true;
-        }
+		
+		public override void Awake()
+		{
+			Fsm.HandleFixedUpdate = true;
+		}
 
 		public override void OnEnter()
 		{
+			CacheRigidBody2d(Fsm.GetOwnerDefaultTarget(gameObject));
+
 			DoAddForce();
 			
 			if (!everyFrame)
@@ -72,48 +66,34 @@ namespace HutongGames.PlayMaker.Actions
 		{
 			DoAddForce();
 		}
-
+		
 		void DoAddForce()
 		{
-			var go = Fsm.GetOwnerDefaultTarget(gameObject);
-			if (go == null)
+		
+			if (!rb2d)
 			{
 				return;
 			}
-
-			if (go.rigidbody2D == null)
-			{
-				LogWarning("Missing rigid body: " + go.name);
-				return;
-			}
-
-			var force = vector.IsNone ? new Vector2(x.Value, y.Value) : vector.Value;
+			
+			Vector2 force = vector.IsNone ? new Vector2(x.Value, y.Value) : vector.Value;
 			
 			// override any axis
-
+			
 			if (!x.IsNone) force.x = x.Value;
 			if (!y.IsNone) force.y = y.Value;
-			//if (!z.IsNone) force.z = z.Value;
-					
+			
 			// apply force			
-				
-			if (space == Space.World)
+			if (!atPosition.IsNone)
 			{
-				if (!atPosition.IsNone)
-				{
-					go.rigidbody2D.AddForceAtPosition(force, atPosition.Value);
-				}
-				else
-				{
-					go.rigidbody2D.AddForce(force);
-				}
+				rb2d.AddForceAtPosition(force, atPosition.Value);
 			}
-			//else
-			//{
-				//go.rigidbody2D.AddRelativeForce(force,forceMode);
-			//}
+			else
+			{
+				rb2d.AddForce(force);
+			}
+
 		}
-
-
+		
+		
 	}
 }

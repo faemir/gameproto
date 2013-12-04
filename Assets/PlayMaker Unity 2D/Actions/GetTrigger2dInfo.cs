@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HutongGames.PlayMaker.Actions
 {
-	[ActionCategory("Physics 2D")]
+	[ActionCategory("Physics 2d")]
 	[Tooltip("Gets info on the last Trigger 2d event and store in variables.  See Unity and PlayMaker docs on Unity 2D physics.")]
 	[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W1152")]
 	public class GetTrigger2dInfo : FsmStateAction

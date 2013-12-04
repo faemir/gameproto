@@ -1,0 +1,5 @@
+_0001_right_edge*****bb0699ffc52e8ba499ef670230998de7--*****0*****3*****False
+ground_dirt*****c81abc85d78fe694689301e4b7045a49--*****0*****3*****False
+ground*****6cd7264f0a4e6d346975d0b9db54d07b--*****0*****3*****False
+_0003_platform*****f7da43c3372043f46b8fddb44095781b--*****0*****3*****False
+_0000_edge_left*****3da2ee654d639b446b24ab79558da28d--*****0*****3*****False

@@ -1,12 +1,12 @@
-// (c) Copyright HutongGames, LLC 2010-2013. All rights reserved.
+﻿// (c) Copyright HutongGames, LLC 2010-2013. All rights reserved.
 
 using UnityEngine;
 
 namespace HutongGames.PlayMaker.Actions
 {
-	[ActionCategory("Physics 2D")]
-	[Tooltip("Sets the Velocity of a 2D Game Object. To leave any axis unchanged, set variable to 'None'. NOTE: Game object must have a rigidbody 2D.")]
-	public class SetVelocity2D : FsmStateAction
+	[ActionCategory("Physics 2d")]
+	[Tooltip("Sets the 2d Velocity of a Game Object. To leave any axis unchanged, set variable to 'None'. NOTE: Game object must have a rigidbody 2D.")]
+	public class SetVelocity2d : RigidBody2dActionBase
 	{
 		[RequiredField]
 		[CheckForComponent(typeof(Rigidbody2D))]
@@ -17,12 +17,9 @@ namespace HutongGames.PlayMaker.Actions
 		
 		public FsmFloat x;
 		public FsmFloat y;
-		//public FsmFloat z;
-		
-		public Space space;
 		
 		public bool everyFrame;
-
+		
 		public override void Reset()
 		{
 			gameObject = null;
@@ -30,19 +27,21 @@ namespace HutongGames.PlayMaker.Actions
 			// default axis to variable dropdown with None selected.
 			x = new FsmFloat { UseVariable = true };
 			y = new FsmFloat { UseVariable = true };
-			//z = new FsmFloat { UseVariable = true };
-			space = Space.Self;
+
+
 			everyFrame = false;
 		}
-
-        public override void Awake()
-        {
-            Fsm.HandleFixedUpdate = true;
-        }		
-
+		
+		public override void Awake()
+		{
+			Fsm.HandleFixedUpdate = true;
+		}		
+		
 		// TODO: test this works in OnEnter!
 		public override void OnEnter()
 		{
+			CacheRigidBody2d(Fsm.GetOwnerDefaultTarget(gameObject));
+
 			DoSetVelocity();
 			
 			if (!everyFrame)
@@ -50,7 +49,7 @@ namespace HutongGames.PlayMaker.Actions
 				Finish();
 			}		
 		}
-
+		
 		public override void OnFixedUpdate()
 		{
 			DoSetVelocity();
@@ -58,11 +57,10 @@ namespace HutongGames.PlayMaker.Actions
 			if (!everyFrame)
 				Finish();
 		}
-
+		
 		void DoSetVelocity()
 		{
-			var go = Fsm.GetOwnerDefaultTarget(gameObject);
-			if (go == null || go.rigidbody2D == null)
+			if (rb2d == null)
 			{
 				return;
 			}
@@ -70,10 +68,11 @@ namespace HutongGames.PlayMaker.Actions
 			// init position
 			
 			Vector2 velocity;
-
+			
 			if (vector.IsNone)
 			{
-				velocity = go.transform.InverseTransformDirection(go.rigidbody2D.velocity);
+				velocity = rb2d.velocity;
+
 			}
 			else
 			{
@@ -81,14 +80,13 @@ namespace HutongGames.PlayMaker.Actions
 			}
 			
 			// override any axis
-
+			
 			if (!x.IsNone) velocity.x = x.Value;
 			if (!y.IsNone) velocity.y = y.Value;
-			//if (!z.IsNone) velocity.z = z.Value;
-
+			
 			// apply
 			
-			go.rigidbody2D.velocity = go.transform.TransformDirection(velocity);
+			rb2d.velocity = velocity;
 		}
 	}
 }

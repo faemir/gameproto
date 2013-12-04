@@ -12,15 +12,15 @@ public class PlayMakerUnity2DProxyInspector : Editor
 
 		EditorGUI.indentLevel = 0;
 
-		OnGUI_DrawEventImplementation();
+		//OnGUI_DrawEventImplementation();
 
 	}
-	
+	/*
 	public void OnGUI_DrawEventImplementation()
 	{
 		PlayMakerUnity2DProxy _target = (PlayMakerUnity2DProxy)this.target;
 
-		if (_target.enableCollisionEnterCallBacks)
+		if (_target.han)
 		{
 			GUI.color = Color.green;
 			GUILayout.BeginHorizontal("","box",GUILayout.ExpandWidth(true));
@@ -37,5 +37,6 @@ public class PlayMakerUnity2DProxyInspector : Editor
 			GUILayout.EndHorizontal();
 		}
 	}
+	*/
 
 }

@@ -8,33 +8,80 @@ using HutongGames.PlayMaker;
 /// </summary>
 public class PlayMakerUnity2DProxy : MonoBehaviour {
 
-	private bool debug = false;
+	private bool debug = true;
 
-	// Flags to avoid unnecessary processing, if no fsm implements a particular Collider callback, nothing will be processed.
+	// Flags to avoid unnecessary processing, if no fsm implements a particular Collider event, nothing will be processed.
 	[HideInInspector]
-	public bool enableCollisionEnterCallBacks = false;
-
-	[HideInInspector]
-	public bool enableCollisionExitCallBacks = false;
+	public bool HandleCollisionEnter2D = false;
 
 	[HideInInspector]
-	public bool enableCollisionStayCallBacks = false;
+	public bool HandleCollisionExit2D = false;
 
 	[HideInInspector]
-	public bool enableTriggerEnterCallBacks = false;
+	public bool HandleCollisionStay2D = false;
 
 	[HideInInspector]
-	public bool enableTriggerExitCallBacks = false;
+	public bool HandleTriggerEnter2D = false;
 
 	[HideInInspector]
-	public bool enableTriggerStayCallBacks = false;
+	public bool HandleTriggerExit2D = false;
+
+	[HideInInspector]
+	public bool HandleTriggerStay2D = false;
+	
 
 	[HideInInspector]
 	public Collision2D lastCollision2DInfo;
 	[HideInInspector]
 	public Collider2D lastTrigger2DInfo;
-	
 
+	
+	#region DELEGATES
+
+	// COLLISION ENTER
+	public delegate void OnCollisionEnter2dDelegate(Collision2D collisionInfo);
+	private OnCollisionEnter2dDelegate OnCollisionEnter2dDelegates;
+	
+	public void AddOnCollisionEnter2dDelegate(OnCollisionEnter2dDelegate del){ this.OnCollisionEnter2dDelegates += del; }
+	public void RemoveOnCollisionEnter2dDelegate(OnCollisionEnter2dDelegate del){ this.OnCollisionEnter2dDelegates -= del; }
+
+	// COLLISION STAY
+	public delegate void OnCollisionStay2dDelegate(Collision2D collisionInfo);
+	private OnCollisionStay2dDelegate OnCollisionStay2dDelegates;
+	
+	public void AddOnCollisionStay2dDelegate(OnCollisionStay2dDelegate del){ this.OnCollisionStay2dDelegates += del; }
+	public void RemoveOnCollisionStay2dDelegate(OnCollisionStay2dDelegate del){ this.OnCollisionStay2dDelegates -= del; }
+
+	// COLLISION EXIT
+	public delegate void OnCollisionExit2dDelegate(Collision2D collisionInfo);
+	private OnCollisionExit2dDelegate OnCollisionExit2dDelegates;
+	
+	public void AddOnCollisionExit2dDelegate(OnCollisionExit2dDelegate del){ this.OnCollisionExit2dDelegates += del; }
+	public void RemoveOnCollisionExit2dDelegate(OnCollisionExit2dDelegate del){ this.OnCollisionExit2dDelegates -= del; }
+
+
+	// TRIGGER ENTER
+	public delegate void OnTriggerEnter2dDelegate(Collider2D collisionInfo);
+	private OnTriggerEnter2dDelegate OnTriggerEnter2dDelegates;
+	
+	public void AddOnTriggerEnter2dDelegate(OnTriggerEnter2dDelegate del){ this.OnTriggerEnter2dDelegates += del; }
+	public void RemoveOnTriggerEnter2dDelegate(OnTriggerEnter2dDelegate del){ this.OnTriggerEnter2dDelegates -= del; }
+	
+	// TRIGGER STAY
+	public delegate void OnTriggerStay2dDelegate(Collider2D collisionInfo);
+	private OnTriggerStay2dDelegate OnTriggerStay2dDelegates;
+	
+	public void AddOnTriggerStay2dDelegate(OnTriggerStay2dDelegate del){ this.OnTriggerStay2dDelegates += del; }
+	public void RemoveOnTriggerStay2dDelegate(OnTriggerStay2dDelegate del){ this.OnTriggerStay2dDelegates -= del; }
+	
+	// TRIGGER EXIT
+	public delegate void OnTriggerExit2dDelegate(Collider2D collisionInfo);
+	private OnTriggerExit2dDelegate OnTriggerExit2dDelegates;
+	
+	public void AddOnTriggerExit2dDelegate(OnTriggerExit2dDelegate del){ this.OnTriggerExit2dDelegates += del; }
+	public void RemoveOnTriggerExit2dDelegate(OnTriggerExit2dDelegate del){ this.OnTriggerExit2dDelegates -= del; }
+
+	#endregion
 
 	[ContextMenu("Help")]
 	public void help ()
@@ -52,6 +99,7 @@ public class PlayMakerUnity2DProxy : MonoBehaviour {
 			this.enabled = false;
 			return;
 		}
+
 		RefreshImplementation();
 	}
 
@@ -60,80 +108,94 @@ public class PlayMakerUnity2DProxy : MonoBehaviour {
 		CheckGameObjectEventsImplementation();
 	}
 
+
 	#region Physics 2D Messages
 
 	void OnCollisionEnter2D(Collision2D coll)
 	{
-		if (debug) Debug.Log("OnCollisionEnter2D "+enableCollisionEnterCallBacks);
+		if (debug) Debug.Log("OnCollisionEnter2D "+HandleCollisionEnter2D,this.gameObject);
 
-		if (enableCollisionEnterCallBacks)
+		if (HandleCollisionEnter2D)
 		{
 			lastCollision2DInfo = coll;
 
 			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnCollisionEnter2DEvent);
 		}
+
+		if (this.OnCollisionEnter2dDelegates!=null) this.OnCollisionEnter2dDelegates(coll);
 	}
 
-	void OnCollisionExit2D(Collision2D coll)
-	{
-		if (debug) Debug.Log("OnCollisionExit2D "+enableCollisionExitCallBacks);
-
-		if (enableCollisionExitCallBacks)
-		{
-			lastCollision2DInfo = coll;
-
-			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnCollisionExit2DEvent);
-		}
-	}
 
 	void OnCollisionStay2D(Collision2D coll)
 	{
-		if (debug) Debug.Log("OnCollisionStay2D "+enableCollisionStayCallBacks);
+		if (debug) Debug.Log("OnCollisionStay2D "+HandleCollisionStay2D,this.gameObject);
 
-		if (enableCollisionStayCallBacks)
+		if (HandleCollisionStay2D)
 		{
 			lastCollision2DInfo = coll;
 
 			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnCollisionStay2DEvent);
 		}
+
+		if (this.OnCollisionStay2dDelegates!=null) this.OnCollisionStay2dDelegates(coll);
+	}
+
+	void OnCollisionExit2D(Collision2D coll)
+	{
+		if (debug) Debug.Log("OnCollisionExit2D "+HandleCollisionExit2D,this.gameObject);
+		
+		if (HandleCollisionExit2D)
+		{
+			lastCollision2DInfo = coll;
+			
+			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnCollisionExit2DEvent);
+		}
+		
+		if (this.OnCollisionExit2dDelegates!=null) this.OnCollisionExit2dDelegates(coll);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (debug) Debug.Log(this.gameObject.name+" OnTriggerEnter2D "+coll.gameObject.name);
+		if (debug) Debug.Log(this.gameObject.name+" OnTriggerEnter2D "+coll.gameObject.name,this.gameObject);
 
-		if (enableTriggerEnterCallBacks)
+		if (HandleTriggerEnter2D)
 		{
 			lastTrigger2DInfo = coll;
 
 			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnTriggerEnter2DEvent);
 		}
-	}
-	
-	void OnTriggerExit2D(Collider2D coll)
-	{
-		if (debug) Debug.Log(this.gameObject.name+" OnTriggerExit2D "+coll.gameObject.name);
 
-		if (enableTriggerExitCallBacks)
-		{
-			lastTrigger2DInfo = coll;
-
-			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnTriggerExit2DEvent);
-		}
+		if (this.OnTriggerEnter2dDelegates!=null) this.OnTriggerEnter2dDelegates(coll);
 	}
 	
 	void OnTriggerStay2D(Collider2D coll)
 	{
-		if (debug) Debug.Log(this.gameObject.name+" OnTriggerStay2D "+coll.gameObject.name);
+		if (debug) Debug.Log(this.gameObject.name+" OnTriggerStay2D "+coll.gameObject.name,this.gameObject);
 
-		if (enableTriggerStayCallBacks)
+		if (HandleTriggerStay2D)
 		{
 			lastTrigger2DInfo = coll;
 
 			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnTriggerStay2DEvent);
 		}
+
+		if (this.OnTriggerStay2dDelegates!=null) this.OnTriggerStay2dDelegates(coll);
 	}
 
+
+	void OnTriggerExit2D(Collider2D coll)
+	{
+		if (debug) Debug.Log(this.gameObject.name+" OnTriggerExit2D "+coll.gameObject.name,this.gameObject);
+		
+		if (HandleTriggerExit2D)
+		{
+			lastTrigger2DInfo = coll;
+			
+			PlayMakerUnity2d.ForwardEventToGameObject(this.gameObject,PlayMakerUnity2d.OnTriggerExit2DEvent);
+		}
+
+		if (this.OnTriggerExit2dDelegates!=null) this.OnTriggerExit2dDelegates(coll);
+	}
 	
 	#endregion
 
@@ -170,27 +232,27 @@ public class PlayMakerUnity2DProxy : MonoBehaviour {
 	{
 		if (transitionName.Equals(PlayMakerUnity2d.OnCollisionEnter2DEvent))
 		{
-			enableCollisionEnterCallBacks = true;
+			HandleCollisionEnter2D = true;
 		}
 		if (transitionName.Equals(PlayMakerUnity2d.OnCollisionExit2DEvent))
 		{
-			enableCollisionExitCallBacks = true;
+			HandleCollisionExit2D = true;
 		}
 		if (transitionName.Equals(PlayMakerUnity2d.OnCollisionStay2DEvent))
 		{
-			enableCollisionStayCallBacks = true;
+			HandleCollisionStay2D = true;
 		}
 		if (transitionName.Equals(PlayMakerUnity2d.OnTriggerEnter2DEvent))
 		{
-			enableTriggerEnterCallBacks = true;
+			HandleTriggerEnter2D = true;
 		}
 		if (transitionName.Equals(PlayMakerUnity2d.OnTriggerExit2DEvent))
 		{
-			enableTriggerExitCallBacks = true;
+			HandleTriggerExit2D = true;
 		}
 		if (transitionName.Equals(PlayMakerUnity2d.OnTriggerStay2DEvent))
 		{
-			enableTriggerStayCallBacks = true;
+			HandleTriggerStay2D = true;
 		}
 	}
 
