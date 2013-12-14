@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
 	public Material[] upperFlames = new Material[4];
 	public Material[] lowerFlames = new Material[4];
 
+	public Transform deathExplosion;
+
 	private Vector2 movement;
 	private Transform upperFlame;
 	private Transform lowerFlame;
@@ -20,10 +22,13 @@ public class Player : MonoBehaviour
 		lowerFlame = transform.FindChild ("flame_lower");
 
 	}
-	public float angle;
+
 	// Update is called once per frame
 	void Update () 
 	{
+		if (GUIManager.Instance.gameOver)
+						return;
+
 		movement.x = moveSpeed;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
 		currentSpeed = rigidbody2D.velocity.magnitude;
@@ -43,6 +48,8 @@ public class Player : MonoBehaviour
 						lowerFlame.renderer.material = lowerFlames [3];
 				}
 
+		Vector3 scale = transform.localScale;
+		scale.x = moveSpeed * 0.1f;
 	}
 
 	void FixedUpdate()
@@ -59,5 +66,11 @@ public class Player : MonoBehaviour
 	void PlayerDeath()
 	{
 		Debug.Log ("You're brown bread!");
+		Instantiate (deathExplosion, transform.position, Quaternion.LookRotation (Vector3.back));
+		GUIManager.Instance.gameOver = true;
+		rigidbody2D.fixedAngle = false;
+		rigidbody2D.drag = 5f;
+		Destroy (lowerFlame.gameObject);
+		Destroy (upperFlame.gameObject);
 	}
 }

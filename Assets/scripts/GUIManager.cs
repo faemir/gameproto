@@ -28,6 +28,7 @@ public class GUIManager : Singleton<GUIManager>
 	public GUIWindow mainMenu = new GUIWindow();
 	public GUIWindow options = new GUIWindow();
 
+	public bool gameOver = true;
 	
 	private enum GUIState
 	{
@@ -69,12 +70,20 @@ public class GUIManager : Singleton<GUIManager>
 
 
 		// Resume game
-		if (true)
+		if (gameOver) 
 		{
-			if ( GUILayout.Button ("New Game", GUILayout.Height (buttonHeight)) )
+			if (GUILayout.Button ("New Game", GUILayout.Height (buttonHeight))) 
 			{
 
-				Application.LoadLevel("scene1");
+				Application.LoadLevel ("scene1");
+				gameOver = false;
+				state = GUIState.NoWindows;
+			}
+		}
+		else
+		{
+			if (GUILayout.Button ("Resume Game", GUILayout.Height (buttonHeight)))
+			{
 				state = GUIState.NoWindows;
 			}
 		}
