@@ -36,6 +36,6 @@ public class CameraFollowTarget : MonoBehaviour
 			lastMoveTime = Time.time;
 		}
 		transform.position = Vector3.Slerp (lastPosition, nextPosition, (Time.time - lastMoveTime) * followSpeed);
-		transform.LookAt (target.position + Vector3.right * distance);
+		transform.LookAt (target.position + Vector3.right * distance * 0.5f);
 	}
 }
