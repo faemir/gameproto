@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
 	void PlayerDeath()
 	{
 		Debug.Log ("You're brown bread!");
-		Instantiate (deathExplosion, transform.position, Quaternion.LookRotation (Vector3.back));
+		Instantiate (deathExplosion, transform.position + Vector3.back, Quaternion.LookRotation (Vector3.back));
 		GUIManager.Instance.gameOver = true;
 		rigidbody2D.fixedAngle = false;
 		rigidbody2D.drag = 5f;

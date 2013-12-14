@@ -7,14 +7,13 @@ public class Explosion : MonoBehaviour {
 	public float speedOfExpansion = 1f;
 	public Material[] materials = new Material[1];
 
-
 	private float startTime;
+	private int matIndex;
 	// Use this for initialization
-	void Start () 
+	void Awake () 
 	{
-		int matIndex = Random.Range (0, materials.Length);
+		matIndex = Random.Range (0, materials.Length);
 		renderer.material = materials [matIndex];
-
 		startTime = Time.time;
 	}
 	
