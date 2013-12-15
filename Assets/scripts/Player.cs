@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Player : MonoBehaviour 
 {
-	public float moveSpeed = 5f;
+	public float acceleration = 5f;
+	public float maxSpeed = 75f;
 	public float jumpForce = 100f;
 	public float currentSpeed = 0f;
 
@@ -26,30 +27,29 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		currentSpeed = rigidbody2D.velocity.magnitude;
 		if (GUIManager.Instance.gameOver)
 						return;
 
-		movement.x = moveSpeed;
+
+		movement.x = (Input.GetAxisRaw ("Horizontal") + 1f) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
-		currentSpeed = rigidbody2D.velocity.magnitude;
+
 
 		// set flame material according to currentSpeed
-		if (currentSpeed < 25f) {
+		if (currentSpeed < 0.25f * maxSpeed) {
 						upperFlame.renderer.material = upperFlames [0];
 						lowerFlame.renderer.material = lowerFlames [0];
-				} else if (currentSpeed >= 25f && currentSpeed < 50f) {
+				} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
 						upperFlame.renderer.material = upperFlames [1];
 						lowerFlame.renderer.material = lowerFlames [1];
-				} else if (currentSpeed >= 50f && currentSpeed < 75f) {
+				} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
 						upperFlame.renderer.material = upperFlames [2];
 						lowerFlame.renderer.material = lowerFlames [2];
-				} else if (currentSpeed >= 75f) {
+				} else if (currentSpeed >= 0.75f * maxSpeed) {
 						upperFlame.renderer.material = upperFlames [3];
 						lowerFlame.renderer.material = lowerFlames [3];
 				}
-
-		Vector3 scale = transform.localScale;
-		scale.x = moveSpeed * 0.1f;
 	}
 
 	void FixedUpdate()
@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
 		GUIManager.Instance.gameOver = true;
 		rigidbody2D.fixedAngle = false;
 		rigidbody2D.drag = 5f;
-		Destroy (lowerFlame.gameObject);
-		Destroy (upperFlame.gameObject);
+		if (lowerFlame != null ) Destroy (lowerFlame.gameObject);
+		if (upperFlame != null ) Destroy (upperFlame.gameObject);
 	}
 }

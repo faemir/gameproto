@@ -10,6 +10,7 @@ public class CameraFollowTarget : MonoBehaviour
 	public float followSpeed = 8f;
 	public float maxCameraDistance = 20f;
 	public float minCameraDistance = 2f;
+	public float minLookOffset = 2.5f;
 
 	private Vector3 lastPosition;
 	private Vector3 nextPosition;
@@ -44,7 +45,7 @@ public class CameraFollowTarget : MonoBehaviour
 			lastMoveTime = Time.time;
 		}
 		transform.position = Vector3.Slerp (lastPosition, nextPosition, (Time.time - lastMoveTime) * followSpeed);
-		transform.LookAt (target.position + Vector3.right * distance);
+		transform.LookAt (target.position + transform.right * minLookOffset);
 	}
 
 	void DeathCam()
