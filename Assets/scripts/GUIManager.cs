@@ -27,6 +27,7 @@ public class GUIManager : Singleton<GUIManager>
 	public int buttonHeight = 25;
 	public GUIWindow mainMenu = new GUIWindow();
 	public GUIWindow options = new GUIWindow();
+	public GUIWindow credits = new GUIWindow();
 
 	public bool gameOver = true;
 	
@@ -34,6 +35,7 @@ public class GUIManager : Singleton<GUIManager>
 	{
 		MainMenu,
 		Options,
+		Credits,
 		NoWindows
 	}
 
@@ -93,6 +95,11 @@ public class GUIManager : Singleton<GUIManager>
 		if ( GUILayout.Button ("Options", GUILayout.Height (buttonHeight)) )
 			state = GUIState.Options;
 
+		// Credits
+		GUILayout.Space(5);
+		if (GUILayout.Button ("Credits", GUILayout.Height (buttonHeight)))
+			state = GUIState.Credits;
+
 		// Quit
 		GUILayout.Space(5);
 		if ( GUILayout.Button ("Quit", GUILayout.Height (buttonHeight)) )
@@ -116,7 +123,25 @@ public class GUIManager : Singleton<GUIManager>
 		}
 	}
 
+	void wCredits(int windowID)
+	{
+		GUILayout.Space (15);
 
+		GUILayout.Label ("Primary author: Matt 'explosivose' Blickem");
+		GUILayout.Space (5);
+		GUILayout.Label ("Music: 'The Life and Death of a Certain K. Zabriskie, Patriarch'" +
+						" by Chris Zabriskie");
+		GUILayout.Space (5);
+		GUILayout.Label ("This game was created for Ludum Dare 28 (December 2013)." + 
+						" The author would like to thank the organisers of Ludum Dare, " + 
+						"the developers of the Unity Engine, and all those helpful people " +
+						"that answer questions / cries for help on the internet."); 
+		// Back to main menu button
+		GUILayout.Space(20);
+		if ( GUILayout.Button ("Main Menu", GUILayout.Height(buttonHeight)) )
+			state = GUIState.MainMenu;
+
+	}
 
 
 
@@ -162,6 +187,9 @@ public class GUIManager : Singleton<GUIManager>
 		case GUIState.Options:
 			thisWindow = options;
 			break;
+		case GUIState.Credits:
+			thisWindow = credits;
+			break;
 		default:
 			break;
 		}
@@ -185,6 +213,9 @@ public class GUIManager : Singleton<GUIManager>
 			break;
 		case GUIState.Options:
 			GUILayout.Window (1, windowSize, wOptions, "Options");
+			break;
+		case GUIState.Credits:
+			GUILayout.Window (1, windowSize, wCredits, "Credits");
 			break;
 		case GUIState.NoWindows:
 			break;

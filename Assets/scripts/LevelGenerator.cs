@@ -3,6 +3,7 @@ using System.Collections;
 
 public class LevelGenerator : MonoBehaviour 
 {
+	public LevelSection startSection;
 	public LevelSection[] sections = new LevelSection[0];
 	public int numberOfSectionsToSpawn = 100;
 
@@ -11,12 +12,25 @@ public class LevelGenerator : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		head = transform.position;
+
+		// start section
+		for (int i = 0; i < startSection.section.Length; i++) 
+		{
+			Transform section = startSection.section[i];
+			section = Instantiate(section,head,Quaternion.identity) as Transform;
+			section.parent = transform;
+			head += startSection.end;
+		}
+
+		// middle sections
 		for (int i = 0; i < numberOfSectionsToSpawn; i++) 
 		{
 			int sectionsIndex = Random.Range(0, sections.Length);
 			int transformIndex = Random.Range(0, sections[sectionsIndex].section.Length);
 			Transform section = sections[sectionsIndex].section[transformIndex];
-			Instantiate(section, head, Quaternion.identity);
+			section = Instantiate(section, head, Quaternion.identity) as Transform;
+			section.parent = transform;
 			head += sections[sectionsIndex].end;
 		}
 	}

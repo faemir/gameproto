@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
 		if (GUIManager.Instance.gameOver)
 						return;
 
+		audio.pitch = currentSpeed / (maxSpeed/12f);
 
 		movement.x = (Input.GetAxisRaw ("Horizontal") + 1f) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
@@ -65,12 +66,15 @@ public class Player : MonoBehaviour
 
 	void PlayerDeath()
 	{
-		Debug.Log ("You're brown bread!");
-		Instantiate (deathExplosion, transform.position + Vector3.back, Quaternion.LookRotation (Vector3.back));
 		GUIManager.Instance.gameOver = true;
+		audio.Stop();
+
+		Instantiate (deathExplosion, transform.position + Vector3.back, Quaternion.LookRotation (Vector3.back));
+
 		rigidbody2D.fixedAngle = false;
 		rigidbody2D.drag = 5f;
 		if (lowerFlame != null ) Destroy (lowerFlame.gameObject);
 		if (upperFlame != null ) Destroy (upperFlame.gameObject);
+		Debug.Log ("You're brown bread!");
 	}
 }
