@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
 	void Update () 
 	{
 		currentSpeed = rigidbody2D.velocity.magnitude;
+		GUIManager.Instance.playerSpeed = currentSpeed;
 		if (GUIManager.Instance.gameOver)
 						return;
 
@@ -74,6 +75,7 @@ public class Player : MonoBehaviour
 		rigidbody2D.drag = 5f;
 		if (lowerFlame != null ) Destroy (lowerFlame.gameObject);
 		if (upperFlame != null ) Destroy (upperFlame.gameObject);
+
 		Debug.Log ("You're brown bread!");
 	}
 }

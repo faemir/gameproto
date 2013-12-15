@@ -34,6 +34,8 @@ public class GUIManager : Singleton<GUIManager>
 	public bool finaleMode = false;
 	public float finaleTime = 0f;
 
+	public float playerSpeed;
+
 	public void ToggleFinaleMode()
 	{
 		finaleMode = !finaleMode;
@@ -145,6 +147,8 @@ public class GUIManager : Singleton<GUIManager>
 						" The author would like to thank the organisers of Ludum Dare, " + 
 						"the developers of the Unity Engine, and all those helpful people " +
 						"that answer questions / cries for help on the internet."); 
+		GUILayout.Space (5);
+		GUILayout.Label ("No barrel rolls were done during the making of this game."); 
 		// Back to main menu button
 		GUILayout.Space(20);
 		if ( GUILayout.Button ("Main Menu", GUILayout.Height(buttonHeight)) )
@@ -183,6 +187,8 @@ public class GUIManager : Singleton<GUIManager>
 	/// </summary>
 	void OnGUI()
 	{
+		GUI.Label (new Rect(5,5,200,20), "Current Speed: " + playerSpeed.ToString());
+
 		int topIndent = 5;
 		int leftIndent = 5;
 		GUIWindow thisWindow = new GUIWindow();
