@@ -29,8 +29,17 @@ public class GUIManager : Singleton<GUIManager>
 	public GUIWindow options = new GUIWindow();
 	public GUIWindow credits = new GUIWindow();
 
+
 	public bool gameOver = true;
-	
+	public bool finaleMode = false;
+	public float finaleTime = 0f;
+
+	public void ToggleFinaleMode()
+	{
+		finaleMode = !finaleMode;
+		finaleTime = Time.time;
+	}
+
 	private enum GUIState
 	{
 		MainMenu,

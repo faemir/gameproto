@@ -25,10 +25,18 @@ public class CameraFollowTarget : MonoBehaviour
 	// Update is called once per frame
 	void LateUpdate () 
 	{
+		if (GUIManager.Instance.finaleMode) {
+						float startTime = GUIManager.Instance.finaleTime;
+						camera.orthographicSize = Mathf.Lerp (3.5f, 7f, (Time.time - startTime)*5f);
+				} else {
+						float startTime = GUIManager.Instance.finaleTime;
+						camera.orthographicSize = Mathf.Lerp (7f, 3.5f, (Time.time - startTime)*5f);
+				}
+
 		if (GUIManager.Instance.gameOver)
-						DeathCam ();
-				else
-						ChaseCam ();
+				DeathCam ();
+		else
+				ChaseCam ();
 	}
 
 	void ChaseCam()

@@ -4,8 +4,9 @@ using System.Collections;
 public class LevelGenerator : MonoBehaviour 
 {
 	public LevelSection startSection;
-	public LevelSection[] sections = new LevelSection[0];
 	public int numberOfSectionsToSpawn = 100;
+	public LevelSection[] sections = new LevelSection[0];
+	public LevelSection[] finalSections = new LevelSection[0];
 
 	private Vector3 head = Vector3.zero;
 
@@ -32,6 +33,18 @@ public class LevelGenerator : MonoBehaviour
 			section = Instantiate(section, head, Quaternion.identity) as Transform;
 			section.parent = transform;
 			head += sections[sectionsIndex].end;
+		}
+
+		// finale
+		for (int i = 0; i < finalSections.Length; i++) 
+		{
+			for (int j = 0; j < finalSections[i].section.Length; j++)
+			{
+				Transform section = finalSections[i].section[j];
+				section = Instantiate (section, head, Quaternion.identity) as Transform;
+				section.parent = transform;
+				head += finalSections[i].end;
+			}
 		}
 	}
 

@@ -36,7 +36,6 @@ public class Player : MonoBehaviour
 		movement.x = (Input.GetAxisRaw ("Horizontal") + 1f) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
 
-
 		// set flame material according to currentSpeed
 		if (currentSpeed < 0.25f * maxSpeed) {
 						upperFlame.renderer.material = upperFlames [0];
