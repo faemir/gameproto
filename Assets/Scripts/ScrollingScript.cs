@@ -106,7 +106,7 @@ public class ScrollingScript : MonoBehaviour
 						// Set the position of the recyled one to be AFTER
 						// the last child.
 						// Note: Only work for horizontal scrolling currently.
-						firstChild.position = new Vector3(lastPosition.x + lastSize.x, firstChild.position.y, firstChild.position.z);
+						firstChild.position = new Vector3(lastPosition.x + lastSize.x + -0.1f, firstChild.position.y, firstChild.position.z);
 						
 						// Set the recycled child to the last position
 						// of the backgroundPart list.
