@@ -5,33 +5,38 @@ public class CameraFollowTarget : MonoBehaviour
 {
 	
 	public Transform target;
-	public float horizontalPercScreenMoveArea = 0.25f;
-	public float verticalPercScreenMoveArea = 0.25f;
 	public float followSpeed = 8f;
 	public float maxCameraDistance = 20f;
 	public float minCameraDistance = 2f;
 	public float minLookOffset = 2.5f;
 	public float cameraSmoothing = 5f;
+	public float minCameraSize = 3.5f;
+	public float maxCameraSize = 5f;
 
 	private Vector3 lastPosition;
 	private Vector3 nextPosition;
 	private float lastMoveTime;
 
+
 	void Start ()
 	{
+		lastMoveTime = 0f;
 		lastPosition = transform.position;
-		nextPosition = transform.position;
+		nextPosition = target.transform.position;
 	}
+
+
 
 	// Update is called once per frame
 	void LateUpdate () 
 	{
+
 		if (GUIManager.Instance.finaleMode) {
 						float startTime = GUIManager.Instance.finaleTime;
-						camera.orthographicSize = Mathf.Lerp (3.5f, 7f, (Time.time - startTime)*5f);
+			camera.orthographicSize = Mathf.Lerp (minCameraSize, maxCameraSize, (Time.time-startTime));
 				} else {
 						float startTime = GUIManager.Instance.finaleTime;
-						camera.orthographicSize = Mathf.Lerp (7f, 3.5f, (Time.time - startTime)*5f);
+			camera.orthographicSize = Mathf.Lerp (maxCameraSize, minCameraSize, (Time.time-startTime));
 				}
 
 		if (GUIManager.Instance.gameOver)
@@ -43,6 +48,18 @@ public class CameraFollowTarget : MonoBehaviour
 	void ChaseCam()
 	{
 		float distance = target.rigidbody2D.velocity.magnitude;
+
+		if (minLookOffset > 0f) 
+		{
+			if ( target.rigidbody2D.velocity.x < 0f)
+				minLookOffset = -minLookOffset;
+		}
+		if (minLookOffset < 0f) 
+		{
+			if ( target.rigidbody2D.velocity.x > 0f)
+				minLookOffset = -minLookOffset;
+		}
+
 		if (distance > maxCameraDistance)
 			distance = maxCameraDistance;
 		if (distance < minCameraDistance)

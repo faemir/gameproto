@@ -27,6 +27,11 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if (rigidbody2D.velocity.x < 0f)
+			transform.rotation = Quaternion.Euler( new Vector3(0f,0f,180f));
+		else
+			transform.rotation = Quaternion.Euler( Vector3.zero);
+
 		currentSpeed = rigidbody2D.velocity.magnitude;
 		GUIManager.Instance.playerSpeed = currentSpeed;
 		if (GUIManager.Instance.gameOver)
@@ -34,7 +39,7 @@ public class Player : MonoBehaviour
 
 		audio.pitch = currentSpeed / (maxSpeed/12f);
 
-		movement.x = (Input.GetAxisRaw ("Horizontal") + 1f) * acceleration;
+		movement.x = (Input.GetAxisRaw ("Horizontal")) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
 
 		// set flame material according to currentSpeed

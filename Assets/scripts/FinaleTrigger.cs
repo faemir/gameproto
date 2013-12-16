@@ -15,15 +15,19 @@ public class FinaleTrigger : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D info)
 	{
-		if (info.collider2D.tag == "Player") {
-			GUIManager.Instance.finaleMode = true;
-				}
+		if (info.collider2D.tag == "Player") 
+		{
+			if ( !GUIManager.Instance.finaleMode )
+				GUIManager.Instance.ToggleFinaleMode();
+		}
 	}
 
 	void OnTriggerExit2D(Collider2D info)
 	{
-		if (info.collider2D.tag == "Player") {
-			GUIManager.Instance.finaleMode = false;
+		if (info.collider2D.tag == "Player") 
+		{
+			if ( GUIManager.Instance.finaleMode )
+				GUIManager.Instance.ToggleFinaleMode();
 		}
 	}
 }

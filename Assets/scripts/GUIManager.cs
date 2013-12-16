@@ -143,8 +143,10 @@ public class GUIManager : Singleton<GUIManager>
 		GUILayout.Label ("Music: 'The Life and Death of a Certain K. Zabriskie, Patriarch'" +
 						" by Chris Zabriskie");
 		GUILayout.Space (5);
-		GUILayout.Label ("This game was created for Ludum Dare 28 (December 2013)." + 
-						" The author would like to thank the organisers of Ludum Dare, " + 
+		GUILayout.Label ("SFX: Bfxr, explosivose");
+		GUILayout.Space (5);
+		GUILayout.Label ("This game was originally created for Ludum Dare 28 (December 2013). " + 
+						"The author would like to thank the organisers of Ludum Dare, " + 
 						"the developers of the Unity Engine, and all those helpful people " +
 						"that answer questions / cries for help on the internet."); 
 		GUILayout.Space (5);
