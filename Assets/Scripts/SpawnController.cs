@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.IO;
 
 /// <summary>
 /// Simply moves the current game object
@@ -13,20 +15,14 @@ public class SpawnController : MonoBehaviour
 
 	// Update is called once per frame
 	void Update () {
+		InvokeRepeating ("spawnEnemy", 2, 5f);
+	}
+
+	void spawnEnemy() {
 		if (enemyCount <= 5) {
 			GameObject.Instantiate(enemy, transform.position, transform.rotation);
 			enemyCount++;
+			
 		}
 	}
 }
-
-
-//public class SpawnController : MonoBehaviour {
-//	public GameObject enemy;
-//	public int enemyNo;
-//
-//	// Use this for initialization
-//	
-//	
-
-//}
