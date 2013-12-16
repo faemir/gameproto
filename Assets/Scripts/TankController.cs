@@ -30,8 +30,20 @@ public class TankController : MonoBehaviour {
 		if (Input.GetButtonDown ("Jump") && grounded) {
 						jump = true;
 				}
-		if (Input.GetButtonDown ("Fire1") && grounded) {
-			transform.Rotate(90,0,0);
+
+		// Shooting
+		bool shoot = Input.GetButtonDown("Fire1");
+		shoot |= Input.GetButtonDown("Fire2");
+		// Careful: For Mac users, ctrl + arrow is a bad idea
+		
+		if (shoot)
+		{
+			WeaponController weapon = GetComponent<WeaponController>();
+			if (weapon != null)
+			{
+				// false because the player is not an enemy
+				weapon.Attack(false);
+			}
 		}
 	}
 	

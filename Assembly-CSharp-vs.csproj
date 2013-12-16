@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\ScoreController.cs" />
      <Compile Include="Assets\Scripts\TankController.cs" />
      <Compile Include="Assets\Scripts\TurretController.cs" />
+     <Compile Include="Assets\Scripts\WeaponController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
