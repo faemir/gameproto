@@ -4,10 +4,11 @@ using System.Collections;
 public class AlienController : MonoBehaviour {
 	
 	public float alienSpeed = .02f;
+	public ScoreController score;
 	
 	// Use this for initialization
-	void Start () {
-		
+	void Start () { 
+		score = GameObject.Find("Score").GetComponent<ScoreController>();
 	}
 	
 	// Update is called once per frame
@@ -17,11 +18,17 @@ public class AlienController : MonoBehaviour {
 	
 	void OnTriggerEnter2D(Collider2D col)
 	{
-		Debug.Log (col.gameObject.tag);
 		// If the alien hits the trigger...
 		if (col.gameObject.tag == "Player") {
 			Destroy (gameObject);
+			
+			if(score.score >= 100)
+				score.score -= 100;
+			else if(score.score > 0)
+				score.score = 0;
+			
 		} else if (col.gameObject.tag == "Terrain") {
+			score.score += 100;
 			Destroy (gameObject);
 		}
 	}
