@@ -18,9 +18,13 @@ public class MovementController : MonoBehaviour
 	public Vector2 direction = new Vector2(-1, 0);
 	
 	private Vector2 movement;
+
+	public float moveForce = 10f;			// Amount of force added to move the player left and right.
+	public float maxSpeed = 0.5f;				// The fastest the player can travel in the x axis.
 	
 	void Update()
 	{
+
 		// 2 - Movement
 		movement = new Vector2(
 			speed.x * direction.x,
@@ -30,6 +34,7 @@ public class MovementController : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
+
 	}
 	
 	void FixedUpdate()
