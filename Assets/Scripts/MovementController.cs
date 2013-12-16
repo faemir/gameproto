@@ -25,6 +25,11 @@ public class MovementController : MonoBehaviour
 		movement = new Vector2(
 			speed.x * direction.x,
 			speed.y * direction.y);
+
+		if (renderer.IsVisibleFrom(Camera.main) == false)
+		{
+			Destroy(gameObject);
+		}
 	}
 	
 	void FixedUpdate()
