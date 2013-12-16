@@ -53,11 +53,12 @@ public class TankController : MonoBehaviour {
 		// Cache the horizontal input.
 		float h = Input.GetAxis("Horizontal");
 
-//		if (rigidbody2D.velocity.x < 0f)
-//			tank.transform.rotation = 180;
-//
-//		if (rigidbody2D.velocity.x > 0f)
-//			tank.transform.rotation = 0;
+		//if (rigidbody2D.velocity.x < 0.2f)
+		if (Input.GetAxis("Horizontal") < 0)
+			rigidbody2D.transform.localRotation = Quaternion.Euler(0,180, 0);
+
+		if (Input.GetAxis("Horizontal") > 0)
+			rigidbody2D.transform.localRotation = Quaternion.Euler(0, 0, 0);
 		
 		// If the player is changing direction (h has a different sign to velocity.x) or hasn't reached maxSpeed yet...
 		if(h * rigidbody2D.velocity.x < maxSpeed)
