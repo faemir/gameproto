@@ -28,9 +28,11 @@ public class TankController : MonoBehaviour {
 		
 		// If the jump button is pressed and the player is grounded then the player should jump.
 		if (Input.GetButtonDown ("Jump") && grounded) {
-						Debug.Log ("spacebar pressed");
 						jump = true;
 				}
+		if (Input.GetButtonDown ("Fire1") && grounded) {
+			transform.Rotate(90,0,0);
+		}
 	}
 	
 	void FixedUpdate ()
