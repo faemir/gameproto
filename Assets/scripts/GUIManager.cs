@@ -33,13 +33,31 @@ public class GUIManager : Singleton<GUIManager>
 	public bool gameOver = true;
 	public bool finaleMode = false;
 	public float finaleTime = 0f;
-
+	private bool nukeDropped = false;
 	public float playerSpeed;
 
 	public void ToggleFinaleMode()
 	{
 		finaleMode = !finaleMode;
 		finaleTime = Time.time;
+	}
+
+	public void StartNukeMessage()
+	{
+		StartCoroutine ("NukeMessage");
+	}
+
+	public void SetGameOver()
+	{
+		gameOver = true;
+		state = GUIState.Credits;
+	}
+
+	IEnumerator NukeMessage()
+	{
+		nukeDropped = true;
+		yield return new WaitForSeconds (5f);
+		nukeDropped = false;
 	}
 
 	private enum GUIState
@@ -191,6 +209,13 @@ public class GUIManager : Singleton<GUIManager>
 	{
 		GUI.Label (new Rect(5,5,200,20), "Current Speed: " + playerSpeed.ToString());
 
+		if (nukeDropped) 
+		{
+			float screenCenterW = Screen.width/2f;
+			float screenCenterH = Screen.height/2f;
+			GUI.Label (new Rect(screenCenterW, screenCenterH, 200,20), "NUKE AWAY! TURN BACK!");
+		}
+
 		int topIndent = 5;
 		int leftIndent = 5;
 		GUIWindow thisWindow = new GUIWindow();
@@ -226,7 +251,7 @@ public class GUIManager : Singleton<GUIManager>
 		switch ( state )
 		{
 		case GUIState.MainMenu:
-			GUILayout.Window (1, windowSize, wMainMenu, "Main Menu");
+			GUILayout.Window (1, windowSize, wMainMenu, "RedLines");
 			break;
 		case GUIState.Options:
 			GUILayout.Window (1, windowSize, wOptions, "Options");

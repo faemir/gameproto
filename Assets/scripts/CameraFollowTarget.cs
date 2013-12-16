@@ -70,7 +70,7 @@ public class CameraFollowTarget : MonoBehaviour
 			lastPosition = transform.position;
 			lastMoveTime = Time.time;
 		}
-		transform.position = Vector3.Slerp (lastPosition, nextPosition, (Time.time - lastMoveTime) * followSpeed);
+		transform.position = Vector3.Slerp (lastPosition, nextPosition, Time.deltaTime * followSpeed);
 		Vector3 lookDirection = (target.position + transform.right * minLookOffset) - transform.position;
 		Quaternion lookRotation = Quaternion.LookRotation (lookDirection);
 		transform.rotation = Quaternion.Slerp (transform.rotation, lookRotation, Time.deltaTime * cameraSmoothing);

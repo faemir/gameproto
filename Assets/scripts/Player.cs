@@ -12,10 +12,12 @@ public class Player : MonoBehaviour
 	public Material[] lowerFlames = new Material[4];
 
 	public Transform deathExplosion;
+	public Transform nuke;
 
 	private Vector2 movement;
 	private Transform upperFlame;
 	private Transform lowerFlame;
+	private bool nukeUsed = false;
 	// Use this for initialization
 	void Start () 
 	{
@@ -27,20 +29,37 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+
+
+		// tell the gui what speed we're at
+		currentSpeed = rigidbody2D.velocity.magnitude;
+		GUIManager.Instance.playerSpeed = currentSpeed;
+
+		// do nothing else if the game is over (player dead)
+		if (GUIManager.Instance.gameOver)
+						return;
+
+		// player rotation is dependent on velocity
 		if (rigidbody2D.velocity.x < 0f)
 			transform.rotation = Quaternion.Euler( new Vector3(0f,0f,180f));
 		else
 			transform.rotation = Quaternion.Euler( Vector3.zero);
 
-		currentSpeed = rigidbody2D.velocity.magnitude;
-		GUIManager.Instance.playerSpeed = currentSpeed;
-		if (GUIManager.Instance.gameOver)
-						return;
-
+		// player audio pitch is dependent on speed
 		audio.pitch = currentSpeed / (maxSpeed/12f);
 
+		// player controls
 		movement.x = (Input.GetAxisRaw ("Horizontal")) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
+		if (!nukeUsed) 
+		{
+			if (Input.GetKey(KeyCode.Space))
+			{
+				nukeUsed = true;
+				Instantiate (nuke, transform.position + Vector3.back, transform.rotation);
+				GUIManager.Instance.StartNukeMessage();
+			}
+		}
 
 		// set flame material according to currentSpeed
 		if (currentSpeed < 0.25f * maxSpeed) {
@@ -71,7 +90,7 @@ public class Player : MonoBehaviour
 
 	void PlayerDeath()
 	{
-		GUIManager.Instance.gameOver = true;
+		GUIManager.Instance.SetGameOver ();
 		audio.Stop();
 
 		Instantiate (deathExplosion, transform.position + Vector3.back, Quaternion.LookRotation (Vector3.back));
