@@ -3,20 +3,27 @@ using System.Collections;
 
 public class EnemyController : MonoBehaviour
 {
-	public Vector2 speed = new Vector2(20, 20);
-	public Vector2 direction = new Vector2(-10, -10);
+	public Vector2 speed = new Vector2(10, 10);
+	public Vector2 direction = new Vector2();
 	public float moveForce = 10f;
 	public float maxSpeed = 0.5f;
 
 	public float alienSpeed = .02f;
 	public ScoreController score;
-	
+
+	private Vector2 still = new Vector2(0,0);
+
 	private Vector2 movement;
 	private Transform groundDetector;
 	private bool grounded = false;
 
 	void start(){
 		score = GameObject.Find ("Score").GetComponent<ScoreController> ();
+		if (transform.position.x < -2)
+			direction.x = 1;
+		
+		if (transform.position.x > -2)
+			direction.x = -1;
 	}
 
 	void awake(){
@@ -25,7 +32,13 @@ public class EnemyController : MonoBehaviour
 	void Update()
 	{
 		// The enemy is grounded if a linecast to the groundcheck position hits anything on the ground layer.
-		grounded = Physics2D.Linecast(transform.position, groundDetector.position, 1 << LayerMask.NameToLayer("Terrain"));
+//		grounded = Physics2D.Linecast(transform.position, groundDetector.position, 1 << LayerMask.NameToLayer("Terrain"));
+
+		if (transform.position.x < -2)
+			direction.x = 1;
+		
+		if (transform.position.x > -2)
+			direction.x = -1;
 
 		movement = new Vector2(
 			speed.x * direction.x,
@@ -40,7 +53,8 @@ public class EnemyController : MonoBehaviour
 	
 	void FixedUpdate()
 	{
-		if (grounded) {
+		//if (grounded) {
+		if (rigidbody2D.velocity == still){
 			rigidbody2D.velocity = movement;
 		}
 	}
