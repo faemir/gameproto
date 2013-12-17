@@ -22,7 +22,8 @@ public class Explosion : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		float scale = Mathf.Lerp (0f, endSize, (Time.time - startTime) * 1/speedOfExpansion);
+		float timeToExpand = endSize / speedOfExpansion;
+		float scale = Mathf.Lerp (0f, endSize, (Time.time - startTime) * 1/timeToExpand);
 		transform.localScale = Vector3.one * scale * 4f;
 
 		Vector2 origin;

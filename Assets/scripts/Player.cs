@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
 			{
 				nukeUsed = true;
 				Instantiate (nuke, transform.position + Vector3.back, transform.rotation);
-				GUIManager.Instance.StartNukeMessage();
+				GUIManager.Instance.StartDialogue("Commander:", "TURN AROUND AND GET OUTTA THERE! NUKE AWAY!",10f);
 			}
 		}
 
@@ -101,5 +101,6 @@ public class Player : MonoBehaviour
 		if (upperFlame != null ) Destroy (upperFlame.gameObject);
 
 		Debug.Log ("You're brown bread!");
+		GUIManager.Instance.StartDialogue("Commander:", "Well, shit.",1.5f);
 	}
 }

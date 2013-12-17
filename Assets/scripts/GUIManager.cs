@@ -28,12 +28,12 @@ public class GUIManager : Singleton<GUIManager>
 	public GUIWindow mainMenu = new GUIWindow();
 	public GUIWindow options = new GUIWindow();
 	public GUIWindow credits = new GUIWindow();
+	public GUIWindow dialogue = new GUIWindow();
 
 
 	public bool gameOver = true;
 	public bool finaleMode = false;
 	public float finaleTime = 0f;
-	private bool nukeDropped = false;
 	public float playerSpeed;
 
 	public void ToggleFinaleMode()
@@ -42,29 +42,19 @@ public class GUIManager : Singleton<GUIManager>
 		finaleTime = Time.time;
 	}
 
-	public void StartNukeMessage()
-	{
-		StartCoroutine ("NukeMessage");
-	}
-
 	public void SetGameOver()
 	{
 		gameOver = true;
 		state = GUIState.Credits;
 	}
 
-	IEnumerator NukeMessage()
-	{
-		nukeDropped = true;
-		yield return new WaitForSeconds (5f);
-		nukeDropped = false;
-	}
 
 	private enum GUIState
 	{
 		MainMenu,
 		Options,
 		Credits,
+		ShowDialogue,
 		NoWindows
 	}
 
@@ -166,7 +156,8 @@ public class GUIManager : Singleton<GUIManager>
 		GUILayout.Label ("This game was originally created for Ludum Dare 28 (December 2013). " + 
 						"The author would like to thank the organisers of Ludum Dare, " + 
 						"the developers of the Unity Engine, and all those helpful people " +
-						"that answer questions / cries for help on the internet."); 
+						"that answer questions / cries for help on the internet. Special " +
+		                "thanks to friends that gave feedback and inspiration!"); 
 		GUILayout.Space (5);
 		GUILayout.Label ("No barrel rolls were done during the making of this game."); 
 		// Back to main menu button
@@ -174,6 +165,34 @@ public class GUIManager : Singleton<GUIManager>
 		if ( GUILayout.Button ("Main Menu", GUILayout.Height(buttonHeight)) )
 			state = GUIState.MainMenu;
 
+	}
+
+	public bool showDialogue = false;
+	string dialogueCharacter = "";
+	string dialogueMessage = "";
+	float dialogueTime = 0f;
+	public void StartDialogue (string character, string message, float time)
+	{
+		dialogueCharacter = character;
+		dialogueMessage = message;
+		dialogueTime = time;
+		StartCoroutine ("ShowDialogueMessage");
+	}
+
+	IEnumerator ShowDialogueMessage()
+	{
+		GUIState previousState = state;
+		showDialogue = true;
+		state = GUIState.ShowDialogue;
+		yield return new WaitForSeconds (dialogueTime);
+		state = previousState;
+		showDialogue = false;
+	}
+
+	void wDialogue(int windowID)
+	{
+		GUILayout.Space (15);
+		GUILayout.Label (dialogueMessage);
 	}
 
 
@@ -209,13 +228,6 @@ public class GUIManager : Singleton<GUIManager>
 	{
 		GUI.Label (new Rect(5,5,200,20), "Current Speed: " + playerSpeed.ToString());
 
-		if (nukeDropped) 
-		{
-			float screenCenterW = Screen.width/2f;
-			float screenCenterH = Screen.height/2f;
-			GUI.Label (new Rect(screenCenterW, screenCenterH, 200,20), "NUKE AWAY! TURN BACK!");
-		}
-
 		int topIndent = 5;
 		int leftIndent = 5;
 		GUIWindow thisWindow = new GUIWindow();
@@ -231,6 +243,9 @@ public class GUIManager : Singleton<GUIManager>
 			break;
 		case GUIState.Credits:
 			thisWindow = credits;
+			break;
+		case GUIState.ShowDialogue:
+			thisWindow = dialogue;
 			break;
 		default:
 			break;
@@ -258,6 +273,9 @@ public class GUIManager : Singleton<GUIManager>
 			break;
 		case GUIState.Credits:
 			GUILayout.Window (1, windowSize, wCredits, "Credits");
+			break;
+		case GUIState.ShowDialogue:
+			GUILayout.Window (1, windowSize, wDialogue, dialogueCharacter);
 			break;
 		case GUIState.NoWindows:
 			break;

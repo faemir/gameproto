@@ -11,8 +11,8 @@ public class RandomAmbience : MonoBehaviour {
 		int index = Random.Range (0, clips.Length);
 		audio.clip = clips [index];
 		audio.loop = true;
+		audio.pitch = Random.Range (0.25f, 1.5f);
 		audio.Play();
-
 	}
 
 }

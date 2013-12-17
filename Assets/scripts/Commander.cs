@@ -1,0 +1,18 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class Commander : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (GUIManager.Instance.showDialogue) {
+						renderer.enabled = true;
+				} else
+						renderer.enabled = false;
+	}
+}
