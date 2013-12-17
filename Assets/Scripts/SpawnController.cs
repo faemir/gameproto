@@ -20,10 +20,10 @@ public class SpawnController : MonoBehaviour
 	}
 
 	void spawnEnemy() {
-		if (enemyCount <= 5) {
+//		if (enemyCount <= 5) {
 			GameObject.Instantiate(enemy, transform.position, transform.rotation);
-			enemyCount++;
+//			enemyCount++;
 			
-		}
+//		}
 	}
 }

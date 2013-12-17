@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
 	public float maxSpeed = 0.5f;
 
 	public float alienSpeed = .02f;
-	public ScoreController score;
+	private ScoreController score;
 
 	private Vector2 still = new Vector2(0,0);
 
@@ -18,7 +18,8 @@ public class EnemyController : MonoBehaviour
 	private bool grounded = false;
 
 	void start(){
-		score = GameObject.Find ("Score").GetComponent<ScoreController> ();
+		score = GameObject.Find("Score").GetComponent<ScoreController>();
+		//score = GameObject.FindGameObjectsWithTag ("Score");
 		if (transform.position.x < -2)
 			direction.x = 1;
 		
@@ -34,12 +35,15 @@ public class EnemyController : MonoBehaviour
 		// The enemy is grounded if a linecast to the groundcheck position hits anything on the ground layer.
 //		grounded = Physics2D.Linecast(transform.position, groundDetector.position, 1 << LayerMask.NameToLayer("Terrain"));
 
-		if (transform.position.x < -2)
+		if (transform.position.y < 5 && transform.position.y > 2)
 			direction.x = 1;
-		
-		if (transform.position.x > -2)
+
+		if (transform.position.y < 2 && transform.position.y > -1)
 			direction.x = -1;
 
+		if (transform.position.y < -1 )
+			direction.x = 1;
+		
 		movement = new Vector2(
 			speed.x * direction.x,
 			speed.y * direction.y);
@@ -65,7 +69,9 @@ public class EnemyController : MonoBehaviour
 		if (col.gameObject.tag == "Bullet") {
 			Debug.Log ("bullet");
 			score.score += 100;
-			
+			if (col.gameObject.tag == "Player") {
+				Destroy (gameObject);
+			}
 		}
 	}
 }

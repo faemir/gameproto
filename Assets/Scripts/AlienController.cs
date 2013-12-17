@@ -8,11 +8,17 @@ public class AlienController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () { 
+		Debug.Log ("hello");
+		// Find("Score").GetComponent<ScoreController>()
+		//ScoreController score = GameObject.Find("Score").GetComponent.<ScoreController>();
 		score = GameObject.Find("Score").GetComponent<ScoreController>();
+
+		Debug.Log (score);
 	}
 	
 	// Update is called once per frame
 	void Update () { 
+		Debug.Log ("hello");
 		//transform.position += new Vector3(0, -alienSpeed, 0);
 	}
 	
