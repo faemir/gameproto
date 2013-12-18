@@ -9,13 +9,13 @@ public class Sun : MonoBehaviour {
 	public Transform player;
 	private Player playerScript;
 
-	// Use this for initialization
-	void Start () {
+	void Awake()
+	{
 		playerScript = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player> ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	void Update () 
+	{
 		light.color = Color.Lerp (slowColor, fastColor, playerScript.currentSpeed / playerScript.maxSpeed);
 	}
 }

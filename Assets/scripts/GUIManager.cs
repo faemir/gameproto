@@ -30,23 +30,8 @@ public class GUIManager : MonoBehaviour
 	public GUIWindow credits = new GUIWindow();
 	public GUIWindow dialogue = new GUIWindow();
 
-
-	public bool gameOver = true;
-	public bool finaleMode = false;
-	public float finaleTime = 0f;
 	public float playerSpeed;
 
-	public void ToggleFinaleMode()
-	{
-		finaleMode = !finaleMode;
-		finaleTime = Time.time;
-	}
-
-	public void SetGameOver()
-	{
-		gameOver = true;
-		state = GUIState.Credits;
-	}
 
 	public void ShowMainMenu()
 	{
@@ -65,7 +50,10 @@ public class GUIManager : MonoBehaviour
 
 	public void ShowNoWindows()
 	{
-		state = GUIState.NoWindows;
+		if (showDialogue)
+						state = GUIState.ShowDialogue;
+				else
+						state = GUIState.NoWindows;
 	}
 
 
@@ -79,41 +67,38 @@ public class GUIManager : MonoBehaviour
 	}
 
 	private GUIState state = GUIState.MainMenu;
-
 	private string playerName = "Player 1";
 
+
+	private bool showDialogue = false;
+	private string dialogueCharacter = "";
+	private string dialogueMessage = "";
+	private float dialogueTime = 0f;
 
 	/// <summary>
 	/// Main Menu GUI function.
 	/// </summary>
 	void wMainMenu(int windowID)
 	{
-		/* Main Menu
-		 * Resume Game 
-		 * Options
-		 * Quit
-		 */
-
 		// Gap for the header
 		GUILayout.Space(15);
 
 
-		// Resume game
-		if (gameOver) 
+		// New game
+		if (GameManager.Instance.State == GameManager.GameState.GameOver || GameManager.Instance.State == GameManager.GameState.MainMenu) 
 		{
 			if (GUILayout.Button ("New Game", GUILayout.Height (buttonHeight))) 
 			{
 
-				Application.LoadLevel ("scene1");
-				gameOver = false;
-				state = GUIState.NoWindows;
+				GameManager.Instance.NewGame("scene1");
 			}
 		}
+		// Resume game
 		else
 		{
 			if (GUILayout.Button ("Resume Game", GUILayout.Height (buttonHeight)))
 			{
-				state = GUIState.NoWindows;
+				GameManager.Instance.State = GameManager.GameState.Play;
 			}
 		}
 
@@ -175,10 +160,7 @@ public class GUIManager : MonoBehaviour
 
 	}
 
-	public bool showDialogue = false;
-	string dialogueCharacter = "";
-	string dialogueMessage = "";
-	float dialogueTime = 0f;
+
 	public void ShowDialogue (string character, string message, float time)
 	{
 		dialogueCharacter = character;
@@ -199,8 +181,9 @@ public class GUIManager : MonoBehaviour
 
 	void wDialogue(int windowID)
 	{
-		GUILayout.Space (15);
-		GUILayout.Label (dialogueMessage);
+		GUI.skin = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
+		GUI.TextArea (new Rect (0f,0f,256f,256f), dialogueMessage);
+		//GUILayout.Label (dialogueMessage);
 	}
 
 
@@ -212,22 +195,28 @@ public class GUIManager : MonoBehaviour
 	/// </summary>
 	void FixedUpdate()
 	{
+		
+		if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.State == GameManager.GameState.Pause) 
+		{
+			GameManager.Instance.State = GameManager.GameState.Play;
+		}
+		else if ( Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.State == GameManager.GameState.Play)
+		{
+			GameManager.Instance.State = GameManager.GameState.Pause;
+		}
 
 		// If there's no GUI being displayed, then check for input.
-		if (state == GUIState.NoWindows)
+		if (state == GUIState.NoWindows || state == GUIState.ShowDialogue)
 		{
 			Screen.lockCursor = true;	// hide cursor whilst no GUI is shown
-
-			if ( Input.GetKeyDown(KeyCode.Escape) )
-			{
-				state = GUIState.MainMenu;
-			}
 		}
 		else
 		{
 			Screen.lockCursor = false;
 		}
 	}
+
+	public Texture commander;
 
 	/// <summary>
 	/// Draws the window.
@@ -283,7 +272,9 @@ public class GUIManager : MonoBehaviour
 			GUILayout.Window (1, windowSize, wCredits, "Credits");
 			break;
 		case GUIState.ShowDialogue:
-			GUILayout.Window (1, windowSize, wDialogue, dialogueCharacter);
+			//GUILayout.Window (1, windowSize, wDialogue, commander);
+			GUI.skin = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
+			GUI.Window (1, windowSize, wDialogue, commander);
 			break;
 		case GUIState.NoWindows:
 			break;

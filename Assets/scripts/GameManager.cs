@@ -9,7 +9,6 @@ public class GameManager : Singleton<GameManager>
 	 * we need in the prefab (stuff like window sizes / alignments)
 	 * Move all GUIManager.Instance functionality to GameManager.Instance 
 	 */
-	public Transform GUIManagerPrefab;
 
 	public enum GameState
 	{
@@ -18,39 +17,21 @@ public class GameManager : Singleton<GameManager>
 		Pause,
 		GameOver
 	}
-
-
-
-
+	
 	private GameState state = GameState.MainMenu;
 	private GUIManager GUIMan;
-
-	private string playerName = "Player 1";
 
 
 	void Awake()
 	{
 		DontDestroyOnLoad (this);
-		
-		playerName = PlayerPrefs.GetString("playerName");
-		if ( playerName == "" ) playerName = "Player 1";
 
-		GUIManagerPrefab = Instantiate(GUIManagerPrefab, Vector3.zero, Quaternion.identity) as Transform;
-		DontDestroyOnLoad (GUIManagerPrefab);
+		GameObject GUIManagerPrefab = (GameObject)Resources.Load ("GUIManager", typeof(GameObject));
+		GUIManagerPrefab = Instantiate(GUIManagerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		DontDestroyOnLoad(GUIManagerPrefab);
 		GUIMan = GUIManagerPrefab.GetComponent<GUIManager> ();
 	}
 
-	// Use this for initialization
-	void Start () 
-	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-	
-	}
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Public GameManager interfaces
@@ -73,10 +54,12 @@ public class GameManager : Singleton<GameManager>
 				break;
 			case GameState.Play:
 				state = GameState.Play;
+				Time.timeScale = 1f;
 				GUIMan.ShowNoWindows();
 				break;
 			case GameState.Pause:
 				state = GameState.Pause;
+				Time.timeScale = 0.1f;
 				GUIMan.ShowMainMenu();
 				break;
 			case GameState.GameOver:

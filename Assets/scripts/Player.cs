@@ -18,12 +18,13 @@ public class Player : MonoBehaviour
 	private Transform upperFlame;
 	private Transform lowerFlame;
 	private bool nukeUsed = false;
+	private bool isDead = false;
 	// Use this for initialization
 	void Start () 
 	{
 		upperFlame = transform.FindChild ("flame_upper");
 		lowerFlame = transform.FindChild ("flame_lower");
-
+		isDead = false;
 	}
 
 	// Update is called once per frame
@@ -33,11 +34,28 @@ public class Player : MonoBehaviour
 
 		// tell the gui what speed we're at
 		currentSpeed = rigidbody2D.velocity.magnitude;
-		GUIManager.Instance.playerSpeed = currentSpeed;
+		//GUIManager.Instance.playerSpeed = currentSpeed;
 
 		// do nothing else if the game is over (player dead)
-		if (GUIManager.Instance.gameOver)
-						return;
+		if (isDead) 
+		{
+			return;
+		}
+
+		// set flame material according to currentSpeed
+		if (currentSpeed < 0.25f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [0];
+			lowerFlame.renderer.material = lowerFlames [0];
+		} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [1];
+			lowerFlame.renderer.material = lowerFlames [1];
+		} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [2];
+			lowerFlame.renderer.material = lowerFlames [2];
+		} else if (currentSpeed >= 0.75f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [3];
+			lowerFlame.renderer.material = lowerFlames [3];
+		}
 
 		// player rotation is dependent on velocity
 		if (rigidbody2D.velocity.x < 0f)
@@ -57,24 +75,11 @@ public class Player : MonoBehaviour
 			{
 				nukeUsed = true;
 				Instantiate (nuke, transform.position + Vector3.back, transform.rotation);
-				GUIManager.Instance.StartDialogue("Commander:", "TURN AROUND AND GET OUTTA THERE! NUKE AWAY!",10f);
+				GameManager.Instance.StartDialogue("Commander:", "TURN AROUND AND GET OUTTA THERE! NUKE AWAY!",10f);
 			}
 		}
 
-		// set flame material according to currentSpeed
-		if (currentSpeed < 0.25f * maxSpeed) {
-						upperFlame.renderer.material = upperFlames [0];
-						lowerFlame.renderer.material = lowerFlames [0];
-				} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
-						upperFlame.renderer.material = upperFlames [1];
-						lowerFlame.renderer.material = lowerFlames [1];
-				} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
-						upperFlame.renderer.material = upperFlames [2];
-						lowerFlame.renderer.material = lowerFlames [2];
-				} else if (currentSpeed >= 0.75f * maxSpeed) {
-						upperFlame.renderer.material = upperFlames [3];
-						lowerFlame.renderer.material = lowerFlames [3];
-				}
+
 	}
 
 	void FixedUpdate()
@@ -90,17 +95,19 @@ public class Player : MonoBehaviour
 
 	void PlayerDeath()
 	{
-		GUIManager.Instance.SetGameOver ();
+		isDead = true;
+		GameManager.Instance.State = GameManager.GameState.GameOver;
+		GameManager.Instance.StartDialogue("Commander:", "Well, shit.",1.5f);
 		audio.Stop();
 
 		Instantiate (deathExplosion, transform.position + Vector3.back, Quaternion.LookRotation (Vector3.back));
 
 		rigidbody2D.fixedAngle = false;
-		rigidbody2D.drag = 5f;
+		rigidbody2D.drag = 2f;
 		if (lowerFlame != null ) Destroy (lowerFlame.gameObject);
 		if (upperFlame != null ) Destroy (upperFlame.gameObject);
 
 		Debug.Log ("You're brown bread!");
-		GUIManager.Instance.StartDialogue("Commander:", "Well, shit.",1.5f);
+
 	}
 }
