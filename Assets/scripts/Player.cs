@@ -49,30 +49,17 @@ public class Player : MonoBehaviour
 			return;
 		}
 
-		// set flame material according to currentSpeed
-		if (currentSpeed < 0.25f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [0];
-			lowerFlame.renderer.material = lowerFlames [0];
-		} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [1];
-			lowerFlame.renderer.material = lowerFlames [1];
-		} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [2];
-			lowerFlame.renderer.material = lowerFlames [2];
-		} else if (currentSpeed >= 0.75f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [3];
-			lowerFlame.renderer.material = lowerFlames [3];
-		}
+		Movement ();
+		Aesthetics ();
 
-		// player rotation is dependent on velocity
-		if (rigidbody2D.velocity.x < 0f)
-			transform.rotation = Quaternion.Euler( new Vector3(0f,0f,180f));
-		else
-			transform.rotation = Quaternion.Euler( Vector3.zero);
 
-		// player audio pitch is dependent on speed
-		audio.pitch = currentSpeed / (maxSpeed/12f);
 
+
+		
+	}
+
+	void Movement()
+	{
 		// player controls
 		movement.x = (Input.GetAxisRaw ("Horizontal")) * acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
@@ -86,6 +73,31 @@ public class Player : MonoBehaviour
 			}
 		}
 
+		// player rotation is dependent on velocity
+		if (rigidbody2D.velocity.x < 0f)
+			transform.rotation = Quaternion.Euler( new Vector3(0f,0f,180f));
+		else
+			transform.rotation = Quaternion.Euler( Vector3.zero);
+	}
+
+	void Aesthetics()
+	{
+		// set flame material according to currentSpeed
+		if (currentSpeed < 0.25f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [0];
+			lowerFlame.renderer.material = lowerFlames [0];
+		} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [1];
+			lowerFlame.renderer.material = lowerFlames [1];
+		} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [2];
+			lowerFlame.renderer.material = lowerFlames [2];
+		} else if (currentSpeed >= 0.75f * maxSpeed) {
+			upperFlame.renderer.material = upperFlames [3];
+			lowerFlame.renderer.material = lowerFlames [3];
+		}		
+		// player audio pitch is dependent on speed
+		audio.pitch = currentSpeed / (maxSpeed/12f);
 
 	}
 

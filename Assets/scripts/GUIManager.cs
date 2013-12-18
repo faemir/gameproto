@@ -26,6 +26,7 @@ public class GUIManager : MonoBehaviour
 {
 	public int buttonHeight = 25;
 	public GUIWindow mainMenu = new GUIWindow();
+	public GUIWindow levelSelect = new GUIWindow();
 	public GUIWindow options = new GUIWindow();
 	public GUIWindow credits = new GUIWindow();
 	public GUIWindow dialogue = new GUIWindow();
@@ -60,6 +61,7 @@ public class GUIManager : MonoBehaviour
 	private enum GUIState
 	{
 		MainMenu,
+		LevelSelect,
 		Options,
 		Credits,
 		ShowDialogue,
@@ -76,10 +78,12 @@ public class GUIManager : MonoBehaviour
 	private float dialogueTime = 0f;
 
 	private Rect windowSize = new Rect();
+	private GUISkin menuSkin;
 	private GUISkin transparentWindow;
 
 	void Awake()
 	{
+		menuSkin = (GUISkin)Resources.Load ("Menus", typeof(GUISkin));
 		transparentWindow = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
 	}
 
@@ -92,38 +96,87 @@ public class GUIManager : MonoBehaviour
 		GUILayout.Space(15);
 
 
-		// New game
-		if (GameManager.Instance.State == GameManager.GameState.GameOver || GameManager.Instance.State == GameManager.GameState.MainMenu) 
+		// Game first launched
+		if (GameManager.Instance.State == GameManager.GameState.MainMenu) 
 		{
-			if (GUILayout.Button ("New Game", GUILayout.Height (buttonHeight))) 
+			if (GUILayout.Button ("New Game", menuSkin.button, GUILayout.Height (buttonHeight))) 
 			{
-
-				GameManager.Instance.NewGame("scene1");
+				state = GUIState.LevelSelect;
 			}
 		}
-		// Resume game
-		else
+
+
+		// Player has died
+		if (GameManager.Instance.State == GameManager.GameState.GameOver ) 
 		{
-			if (GUILayout.Button ("Resume Game", GUILayout.Height (buttonHeight)))
+			if (GUILayout.Button ("Retry", menuSkin.button, GUILayout.Height (buttonHeight))) 
+			{
+				GameManager.Instance.NewGame(Application.loadedLevel);
+			}
+			GUILayout.Space(20);
+			if (GUILayout.Button ("New Game", menuSkin.button, GUILayout.Height (buttonHeight))) 
+			{
+				state = GUIState.LevelSelect;
+			}
+		}
+
+
+
+		// Resume game
+		if (GameManager.Instance.State == GameManager.GameState.Pause )
+		{
+			if (GUILayout.Button ("Resume Game", menuSkin.button, GUILayout.Height (buttonHeight)))
 			{
 				GameManager.Instance.State = GameManager.GameState.Play;
+			}
+			GUILayout.Space(20);
+			if (GUILayout.Button ("Retry", menuSkin.button, GUILayout.Height (buttonHeight))) 
+			{
+				GameManager.Instance.NewGame(Application.loadedLevel);
+			}
+			GUILayout.Space(5);
+			if (GUILayout.Button ("New Game", menuSkin.button, GUILayout.Height (buttonHeight))) 
+			{
+				state = GUIState.LevelSelect;
 			}
 		}
 
 		// Options
 		GUILayout.Space(5);
-		if ( GUILayout.Button ("Options", GUILayout.Height (buttonHeight)) )
+		if ( GUILayout.Button ("Options", menuSkin.button, GUILayout.Height (buttonHeight)) )
 			state = GUIState.Options;
 
 		// Credits
 		GUILayout.Space(5);
-		if (GUILayout.Button ("Credits", GUILayout.Height (buttonHeight)))
+		if (GUILayout.Button ("Credits", menuSkin.button, GUILayout.Height (buttonHeight)))
 			state = GUIState.Credits;
 
 		// Quit
 		GUILayout.Space(5);
-		if ( GUILayout.Button ("Quit", GUILayout.Height (buttonHeight)) )
+		if ( GUILayout.Button ("Quit", menuSkin.button, GUILayout.Height (buttonHeight)) )
 			Application.Quit();
+	}
+
+	void wLevelSelect(int windowID)
+	{
+		GUILayout.Space (15);
+		// level 1
+		if (GUILayout.Button ("Stage 1", menuSkin.button, GUILayout.Height (buttonHeight))) 
+		{
+			GameManager.Instance.NewGame("scene1");
+		}
+
+		// level 2
+		GUILayout.Space(5);
+		if (GUILayout.Button ("Stage 2", menuSkin.button, GUILayout.Height (buttonHeight))) 
+		{
+			GameManager.Instance.NewGame("scene2");
+		}
+
+		// back to main menu
+		GUILayout.Space(20);
+		if ( GUILayout.Button ("Main Menu", menuSkin.button, GUILayout.Height(buttonHeight)) )
+			state = GUIState.MainMenu;
 	}
 
 	void wOptions(int windowID)
@@ -136,7 +189,7 @@ public class GUIManager : MonoBehaviour
 
 		// Back to main menu button
 		GUILayout.Space(5);
-		if ( GUILayout.Button ("Main Menu", GUILayout.Height(buttonHeight)) )
+		if ( GUILayout.Button ("Main Menu", menuSkin.button, GUILayout.Height(buttonHeight)) )
 		{
 			PlayerPrefs.SetString("playerName", playerName);
 			state = GUIState.MainMenu;
@@ -163,7 +216,7 @@ public class GUIManager : MonoBehaviour
 		GUILayout.Label ("No barrel rolls were done during the making of this game."); 
 		// Back to main menu button
 		GUILayout.Space(20);
-		if ( GUILayout.Button ("Main Menu", GUILayout.Height(buttonHeight)) )
+		if ( GUILayout.Button ("Main Menu", menuSkin.button, GUILayout.Height(buttonHeight)) )
 			state = GUIState.MainMenu;
 
 	}
@@ -189,10 +242,10 @@ public class GUIManager : MonoBehaviour
 
 	void wDialogue(int windowID)
 	{
-		GUI.skin = transparentWindow;
-		Rect textRect = new Rect (0f, 0f, windowSize.width, windowSize.height);
-		GUI.TextArea (textRect, dialogueMessage);
-		//GUILayout.Label (dialogueMessage);
+		//GUI.skin = transparentWindow;
+		//Rect textRect = new Rect (0f, 0f, windowSize.width, windowSize.height);
+		//GUI.TextArea (textRect, dialogueMessage);
+		GUILayout.Label (dialogueMessage,transparentWindow.window);
 	}
 
 
@@ -244,6 +297,9 @@ public class GUIManager : MonoBehaviour
 		case GUIState.MainMenu:
 			thisWindow = mainMenu;
 			break;
+		case GUIState.LevelSelect:
+			thisWindow = levelSelect;
+			break;
 		case GUIState.Options:
 			thisWindow = options;
 			break;
@@ -272,18 +328,20 @@ public class GUIManager : MonoBehaviour
 		switch ( state )
 		{
 		case GUIState.MainMenu:
-			GUILayout.Window (1, windowSize, wMainMenu, "RedLines");
+
+			GUILayout.Window (1, windowSize, wMainMenu, "RedLines", menuSkin.window);
+			break;
+		case GUIState.LevelSelect:
+			GUILayout.Window (1, windowSize, wLevelSelect, "Choose a level", menuSkin.window);
 			break;
 		case GUIState.Options:
-			GUILayout.Window (1, windowSize, wOptions, "Options");
+			GUILayout.Window (1, windowSize, wOptions, "Options", menuSkin.window);
 			break;
 		case GUIState.Credits:
-			GUILayout.Window (1, windowSize, wCredits, "Credits");
+			GUILayout.Window (1, windowSize, wCredits, "Credits", menuSkin.window);
 			break;
 		case GUIState.ShowDialogue:
-			//GUILayout.Window (1, windowSize, wDialogue, commander);
-			GUI.skin = transparentWindow;
-			GUI.Window (1, windowSize, wDialogue, commander);
+			GUILayout.Window (1, windowSize, wDialogue, commander, transparentWindow.window);
 			break;
 		case GUIState.NoWindows:
 			break;

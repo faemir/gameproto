@@ -64,7 +64,7 @@ public class GameManager : Singleton<GameManager>
 				break;
 			case GameState.GameOver:
 				state = GameState.GameOver;
-				GUIMan.ShowCredits();
+				GUIMan.ShowMainMenu();
 				break;
 			default:
 				Debug.LogError("Tried to set GameManager.State to invalid value.");

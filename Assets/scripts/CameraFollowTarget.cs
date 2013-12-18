@@ -58,7 +58,7 @@ public class CameraFollowTarget : MonoBehaviour
 
 		cameraShakeOffset = Random.onUnitSphere * targetDeltaSpeed * cameraShake;
 
-		target.audio.volume = Mathf.Abs(targetDeltaSpeed) * cameraShake;
+		target.audio.volume = Mathf.Abs(targetDeltaSpeed) * 0.02f;
 
 		if (minLookOffset > 0f) 
 		{
