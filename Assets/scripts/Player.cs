@@ -7,6 +7,13 @@ public class Player : MonoBehaviour
 	public float maxSpeed = 75f;
 	public float jumpForce = 100f;
 	public float currentSpeed = 0f;
+	public float currentAcceleration
+	{
+		get 
+		{
+			return movement.magnitude;
+		}
+	}
 
 	public Material[] upperFlames = new Material[4];
 	public Material[] lowerFlames = new Material[4];

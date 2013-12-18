@@ -75,6 +75,14 @@ public class GUIManager : MonoBehaviour
 	private string dialogueMessage = "";
 	private float dialogueTime = 0f;
 
+	private Rect windowSize = new Rect();
+	private GUISkin transparentWindow;
+
+	void Awake()
+	{
+		transparentWindow = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
+	}
+
 	/// <summary>
 	/// Main Menu GUI function.
 	/// </summary>
@@ -181,8 +189,9 @@ public class GUIManager : MonoBehaviour
 
 	void wDialogue(int windowID)
 	{
-		GUI.skin = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
-		GUI.TextArea (new Rect (0f,0f,256f,256f), dialogueMessage);
+		GUI.skin = transparentWindow;
+		Rect textRect = new Rect (0f, 0f, windowSize.width, windowSize.height);
+		GUI.TextArea (textRect, dialogueMessage);
 		//GUILayout.Label (dialogueMessage);
 	}
 
@@ -257,7 +266,7 @@ public class GUIManager : MonoBehaviour
 		if ( thisWindow.alignVertical )
 			leftIndent = Screen.width / 2 - thisWindow.width / 2;
 
-		Rect windowSize = new Rect(leftIndent, topIndent, thisWindow.width, thisWindow.height);
+		windowSize = new Rect(leftIndent, topIndent, thisWindow.width, thisWindow.height);
 
 		// Draw thisWindow (GUILayout.Window)
 		switch ( state )
@@ -273,7 +282,7 @@ public class GUIManager : MonoBehaviour
 			break;
 		case GUIState.ShowDialogue:
 			//GUILayout.Window (1, windowSize, wDialogue, commander);
-			GUI.skin = (GUISkin)Resources.Load ("TransparentWindow",typeof(GUISkin));
+			GUI.skin = transparentWindow;
 			GUI.Window (1, windowSize, wDialogue, commander);
 			break;
 		case GUIState.NoWindows:

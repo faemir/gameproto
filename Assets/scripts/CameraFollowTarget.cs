@@ -12,6 +12,7 @@ public class CameraFollowTarget : MonoBehaviour
 	public float cameraSmoothing = 5f;
 	public float minCameraSize = 3.5f;
 	public float maxCameraSize = 5f;
+	public float cameraShake = 1f;
 
 	private Vector3 lastPosition;
 	private Vector3 nextPosition;
@@ -47,9 +48,17 @@ public class CameraFollowTarget : MonoBehaviour
 				ChaseCam ();
 	}
 
+	float previousTargetSpeed = 0f;
+	Vector3 cameraShakeOffset = Vector3.zero;
 	void ChaseCam()
 	{
-		float distance = target.rigidbody2D.velocity.magnitude;
+		float targetSpeed = target.rigidbody2D.velocity.magnitude;
+		float targetDeltaSpeed = (targetSpeed - previousTargetSpeed) / Time.fixedDeltaTime;
+		previousTargetSpeed = targetSpeed;
+
+		cameraShakeOffset = Random.onUnitSphere * targetDeltaSpeed * cameraShake;
+
+		target.audio.volume = Mathf.Abs(targetDeltaSpeed) * cameraShake;
 
 		if (minLookOffset > 0f) 
 		{
@@ -62,21 +71,21 @@ public class CameraFollowTarget : MonoBehaviour
 				minLookOffset = -minLookOffset;
 		}
 
-		if (distance > maxCameraDistance)
-			distance = maxCameraDistance;
-		if (distance < minCameraDistance)
-			distance = minCameraDistance;
-		nextPosition = target.position + Vector3.back *  ((maxCameraDistance+minCameraDistance)-distance);
+		if (targetSpeed > maxCameraDistance)
+			targetSpeed = maxCameraDistance;
+		if (targetSpeed < minCameraDistance)
+			targetSpeed = minCameraDistance;
+		nextPosition = target.position + Vector3.back *  ((maxCameraDistance+minCameraDistance)-targetSpeed);
 		if (transform.position != lastPosition) 
 		{
 			lastPosition = transform.position;
 			lastMoveTime = Time.time;
 		}
 		transform.position = Vector3.Slerp (lastPosition, nextPosition, Time.deltaTime * followSpeed);
-		Vector3 lookDirection = (target.position + transform.right * minLookOffset) - transform.position;
+		Vector3 lookTarget = target.position + (transform.right * minLookOffset) + cameraShakeOffset;
+		Vector3 lookDirection = lookTarget - transform.position;
 		Quaternion lookRotation = Quaternion.LookRotation (lookDirection);
 		transform.rotation = Quaternion.Slerp (transform.rotation, lookRotation, Time.deltaTime * cameraSmoothing);
-		//transform.LookAt (target.position + transform.right * minLookOffset);
 	}
 
 	void DeathCam()
