@@ -1,18 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FinaleTrigger : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
+public class FinaleTrigger : MonoBehaviour 
+{
+	/* Finale mode doesn't do anything anymore!
+	 * 
+	 * 
 	void OnTriggerEnter2D(Collider2D info)
 	{
 		if (info.collider2D.tag == "Player") 
@@ -29,5 +22,5 @@ public class FinaleTrigger : MonoBehaviour {
 			if ( GUIManager.Instance.finaleMode )
 				GUIManager.Instance.ToggleFinaleMode();
 		}
-	}
+	}*/
 }

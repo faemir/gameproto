@@ -22,7 +22,7 @@ public class GUIWindow
 /// <summary>
 /// All the GUI code exists in this class.
 /// </summary>
-public class GUIManager : Singleton<GUIManager> 
+public class GUIManager : MonoBehaviour
 {
 	public int buttonHeight = 25;
 	public GUIWindow mainMenu = new GUIWindow();
@@ -48,6 +48,26 @@ public class GUIManager : Singleton<GUIManager>
 		state = GUIState.Credits;
 	}
 
+	public void ShowMainMenu()
+	{
+		state = GUIState.MainMenu;
+	}
+
+	public void ShowOptions()
+	{
+		state = GUIState.Options;
+	}
+
+	public void ShowCredits()
+	{
+		state = GUIState.Credits;
+	}
+
+	public void ShowNoWindows()
+	{
+		state = GUIState.NoWindows;
+	}
+
 
 	private enum GUIState
 	{
@@ -61,18 +81,6 @@ public class GUIManager : Singleton<GUIManager>
 	private GUIState state = GUIState.MainMenu;
 
 	private string playerName = "Player 1";
-
-	/// <summary>
-	/// Initialisation.
-	/// Load player pref values.
-	/// </summary>
-	void Awake()
-	{
-		DontDestroyOnLoad (this);
-
-		playerName = PlayerPrefs.GetString("playerName");
-		if ( playerName == "" ) playerName = "Player 1";
-	}
 
 
 	/// <summary>
@@ -171,7 +179,7 @@ public class GUIManager : Singleton<GUIManager>
 	string dialogueCharacter = "";
 	string dialogueMessage = "";
 	float dialogueTime = 0f;
-	public void StartDialogue (string character, string message, float time)
+	public void ShowDialogue (string character, string message, float time)
 	{
 		dialogueCharacter = character;
 		dialogueMessage = message;
