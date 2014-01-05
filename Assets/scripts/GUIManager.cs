@@ -320,6 +320,8 @@ public class GUIManager : MonoBehaviour
 		GUILayout.Space (5);
 		GUILayout.Label ("SFX: Bfxr, explosivose");
 		GUILayout.Space (5);
+		GUILayout.Label ("Ship models and flame effects: Tanbouz");
+		GUILayout.Space (5);
 		GUILayout.Label ("This game was originally created for Ludum Dare 28 (December 2013). " + 
 						"The author would like to thank the organisers of Ludum Dare, " + 
 						"the developers of the Unity Engine, and all those helpful people " +
@@ -379,8 +381,7 @@ public class GUIManager : MonoBehaviour
 		{
 			GameManager.Instance.State = GameManager.GameState.Pause;
 		}
-
-		// If there's no GUI being displayed, then check for input.
+		
 		if (state == GUIState.NoWindows || state == GUIState.ShowDialogue)
 		{
 			Screen.lockCursor = true;	// hide cursor whilst no GUI is shown

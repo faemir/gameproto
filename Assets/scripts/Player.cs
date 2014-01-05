@@ -29,8 +29,6 @@ public class Player : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		upperFlame = transform.FindChild ("flame_upper");
-		lowerFlame = transform.FindChild ("flame_lower");
 		isDead = false;
 	}
 
@@ -51,18 +49,24 @@ public class Player : MonoBehaviour
 
 		Movement ();
 		Aesthetics ();
-
-
-
-
 		
 	}
 
 	void Movement()
 	{
 		// player controls
-		movement.x = (Input.GetAxisRaw ("Horizontal")) * acceleration;
+		movement.x = acceleration;
 		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
+		if (Input.GetAxisRaw ("Vertical") > 0f && rigidbody2D.velocity.y < 0f)
+		{
+			movement.y += -rigidbody2D.velocity.y;
+		}
+		if (Input.GetAxisRaw ("Vertical") < 0f && rigidbody2D.velocity.y > 0f)
+		{
+			movement.y += -rigidbody2D.velocity.y;
+		}
+
+		
 		if (!nukeUsed) 
 		{
 			if (Input.GetKey(KeyCode.Space))
@@ -81,21 +85,7 @@ public class Player : MonoBehaviour
 	}
 
 	void Aesthetics()
-	{
-		// set flame material according to currentSpeed
-		if (currentSpeed < 0.25f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [0];
-			lowerFlame.renderer.material = lowerFlames [0];
-		} else if (currentSpeed >= 0.25f * maxSpeed && currentSpeed < 0.50f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [1];
-			lowerFlame.renderer.material = lowerFlames [1];
-		} else if (currentSpeed >= 0.50f * maxSpeed && currentSpeed < 0.75f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [2];
-			lowerFlame.renderer.material = lowerFlames [2];
-		} else if (currentSpeed >= 0.75f * maxSpeed) {
-			upperFlame.renderer.material = upperFlames [3];
-			lowerFlame.renderer.material = lowerFlames [3];
-		}		
+	{		
 		// player audio pitch is dependent on speed
 		audio.pitch = currentSpeed / (maxSpeed/12f);
 

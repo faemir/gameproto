@@ -28,18 +28,8 @@ public class CameraFollowTarget : MonoBehaviour
 
 
 
-	// Update is called once per frame
-	void LateUpdate () 
+	void FixedUpdate () 
 	{
-		/* This code can no longer be used!
-		 * "Finale mode" if it still exists, will be controlled by the Player...
-		if (GUIManager.Instance.finaleMode) {
-			float startTime = GUIManager.Instance.finaleTime;
-			camera.orthographicSize = Mathf.Lerp (minCameraSize, maxCameraSize, (Time.time-startTime));
-				} else {
-			float startTime = GUIManager.Instance.finaleTime;
-			camera.orthographicSize = Mathf.Lerp (maxCameraSize, minCameraSize, (Time.time-startTime));
-				}*/
 
 
 		if (GameManager.Instance.State == GameManager.GameState.GameOver )

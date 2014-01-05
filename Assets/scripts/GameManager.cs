@@ -20,7 +20,7 @@ public class GameManager : Singleton<GameManager>
 	
 	private GameState state = GameState.MainMenu;
 	private GUIManager GUIMan;
-
+	
 
 	void Awake()
 	{
@@ -89,5 +89,6 @@ public class GameManager : Singleton<GameManager>
 	{
 		GUIMan.ShowDialogue (character, message, showTime);
 	}
-
+	
+	
 }
