@@ -20,6 +20,7 @@ public class LevelGenerator : MonoBehaviour
 		{
 			levels[lvl].LoadSections();
 			
+			// Loop through level sections (start, middle, end)
 			for (int stn = 0; stn < levels[lvl].sections.Length; stn++)
 			{
 				LevelSection section = levels[lvl].sections[stn];
@@ -42,15 +43,15 @@ public class LevelGenerator : MonoBehaviour
 						piece = Instantiate(piece, head + offset, rotation) as Transform;
 						piece.parent = transform;
 					}
-
 					
 					// move head to the end
 					Vector3 tail = piece.FindChild("Tail").position - piece.position;
 					head += tail;
 				}
-
-
 			}
+			// Spawn level transition trigger.
+			
+			
 		}
 
 	}

@@ -59,7 +59,7 @@ public class GameManager : Singleton<GameManager>
 				break;
 			case GameState.Pause:
 				state = GameState.Pause;
-				Time.timeScale = 0.1f;
+				Time.timeScale = 0.01f;
 				GUIMan.ShowMainMenu();
 				break;
 			case GameState.GameOver:

@@ -3,10 +3,21 @@ using System.Collections;
 
 public class Player : MonoBehaviour 
 {
-	public float acceleration = 5f;
-	public float maxSpeed = 75f;
-	public float jumpForce = 100f;
-	public float currentSpeed = 0f;
+	public float thrust = 15f;
+	public float maxSpeed
+	{
+		get 
+		{
+			return thrust / (rigidbody2D.mass * rigidbody2D.drag);
+		}
+	}
+	public float currentSpeed
+	{
+		get
+		{
+			return rigidbody2D.velocity.magnitude;
+		}
+	}
 	public float currentAcceleration
 	{
 		get 
@@ -14,9 +25,6 @@ public class Player : MonoBehaviour
 			return movement.magnitude;
 		}
 	}
-
-	public Material[] upperFlames = new Material[4];
-	public Material[] lowerFlames = new Material[4];
 
 	public Transform deathExplosion;
 	public Transform nuke;
@@ -30,16 +38,12 @@ public class Player : MonoBehaviour
 	void Start () 
 	{
 		isDead = false;
+		tag = "Player";
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-
-
-		// tell the gui what speed we're at
-		currentSpeed = rigidbody2D.velocity.magnitude;
-		//GUIManager.Instance.playerSpeed = currentSpeed;
 
 		// do nothing else if the game is over (player dead)
 		if (isDead) 
@@ -55,17 +59,11 @@ public class Player : MonoBehaviour
 	void Movement()
 	{
 		// player controls
-		movement.x = acceleration;
-		movement.y = Input.GetAxisRaw ("Vertical") * jumpForce;
-		if (Input.GetAxisRaw ("Vertical") > 0f && rigidbody2D.velocity.y < 0f)
-		{
-			movement.y += -rigidbody2D.velocity.y;
-		}
-		if (Input.GetAxisRaw ("Vertical") < 0f && rigidbody2D.velocity.y > 0f)
-		{
-			movement.y += -rigidbody2D.velocity.y;
-		}
-
+		float horizontal = Input.GetAxisRaw ("Horizontal");
+		float vertical = Input.GetAxisRaw ("Vertical");
+		movement.x = horizontal * thrust;
+		movement.y = vertical * thrust * 2f;
+		
 		
 		if (!nukeUsed) 
 		{
@@ -78,10 +76,15 @@ public class Player : MonoBehaviour
 		}
 
 		// player rotation is dependent on velocity
+		float dampedV = Input.GetAxis ("Vertical");
+		Vector3 rotation = Vector3.zero;
+		
 		if (rigidbody2D.velocity.x < 0f)
-			transform.rotation = Quaternion.Euler( new Vector3(0f,0f,180f));
+			rotation = new Vector3(dampedV * 10f,0f,180f - dampedV * 10f);
 		else
-			transform.rotation = Quaternion.Euler( Vector3.zero);
+			rotation = new Vector3(dampedV * 10f,0f,dampedV * 10f);
+			
+		transform.rotation = Quaternion.Euler(rotation);
 	}
 
 	void Aesthetics()
