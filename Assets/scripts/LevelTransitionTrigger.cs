@@ -3,13 +3,16 @@ using System.Collections;
 
 public class LevelTransitionTrigger : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+	public float thrustIncrease;
+	public Gradient newFlameGradient;
+	public Color nextSunColour;
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void OnTriggerEnter2D(Collider2D info)
+	{
+		if (info.gameObject.tag == "Player") 
+		{
+			info.gameObject.GetComponent<Player>().LevelUp(thrustIncrease, newFlameGradient);
+			GameManager.Instance.LevelUp(nextSunColour);
+		}
 	}
 }

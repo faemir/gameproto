@@ -20,7 +20,8 @@ public class GameManager : Singleton<GameManager>
 	
 	private GameState state = GameState.MainMenu;
 	private GUIManager GUIMan;
-	
+	private Player player;
+	private Sun sun;
 
 	void Awake()
 	{
@@ -30,9 +31,26 @@ public class GameManager : Singleton<GameManager>
 		GUIManagerPrefab = Instantiate(GUIManagerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		DontDestroyOnLoad(GUIManagerPrefab);
 		GUIMan = GUIManagerPrefab.GetComponent<GUIManager> ();
+
 	}
 
-
+	
+	void Update()
+	{
+		if (state == GameState.Play)
+		{
+			if (player == null)
+				player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+			
+			if (sun == null)
+				sun = GameObject.FindGameObjectWithTag("Sun").GetComponent<Sun>();
+			
+			if (player != null)
+				GUIMan.playerSpeed = player.currentSpeed;
+		}
+			
+	}
+	
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Public GameManager interfaces
 	 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,5 +108,10 @@ public class GameManager : Singleton<GameManager>
 		GUIMan.ShowDialogue (character, message, showTime);
 	}
 	
-	
+	public void LevelUp(Color fastColour)
+	{
+		
+		sun.slowColor = sun.fastColor;
+		sun.fastColor = fastColour;
+	}
 }

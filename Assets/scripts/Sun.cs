@@ -6,16 +6,15 @@ public class Sun : MonoBehaviour {
 	public Color slowColor = Color.blue;
 	public Color fastColor = Color.red;
 
-	public Transform player;
-	private Player playerScript;
+	private Player player;
 
 	void Awake()
 	{
-		playerScript = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player> ();
+		player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player> ();
 	}
 
 	void Update () 
 	{
-		light.color = Color.Lerp (slowColor, fastColor, playerScript.currentSpeed / playerScript.maxSpeed);
+		light.color = Color.Lerp (slowColor, fastColor, player.currentSpeed / player.maxSpeed);
 	}
 }

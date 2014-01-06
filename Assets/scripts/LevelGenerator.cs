@@ -20,6 +20,9 @@ public class LevelGenerator : MonoBehaviour
 		{
 			levels[lvl].LoadSections();
 			
+			// spawn level transition trigger
+			Instantiate(levels[lvl].Trigger, head, Quaternion.identity);
+			
 			// Loop through level sections (start, middle, end)
 			for (int stn = 0; stn < levels[lvl].sections.Length; stn++)
 			{
@@ -49,8 +52,6 @@ public class LevelGenerator : MonoBehaviour
 					head += tail;
 				}
 			}
-			// Spawn level transition trigger.
-			
 			
 		}
 
@@ -66,11 +67,20 @@ public class Level
 	public string folderName;
 	
 	// How much to increment player acceleraetion by for this level
-	public float accelerationIncrease = 15f;
+	public float thrustIncrease = 15f;
 	
 	// The colour gradients to use (actual color is dependant on player velocity)
-	public Gradient sunGradient;
+	public Color sunColour;
 	public Gradient flameGradient;
+	
+	private LevelTransitionTrigger trigger;
+	public Transform Trigger
+	{
+		get
+		{
+			return trigger.transform;
+		}
+	}
 	
 	// Section data for this level (set in inspector)
 	public LevelSection[] sections = new LevelSection[0];
@@ -81,6 +91,9 @@ public class Level
 		{
 			section.LoadPieces(folderName);
 		}
+		trigger = Resources.Load<Transform>("leveltrigger").GetComponent<LevelTransitionTrigger>();
+		trigger.thrustIncrease = thrustIncrease;
+		trigger.nextSunColour = sunColour;
 	}
 }
 

@@ -30,8 +30,7 @@ public class Player : MonoBehaviour
 	public Transform nuke;
 
 	private Vector2 movement;
-	private Transform upperFlame;
-	private Transform lowerFlame;
+
 	private bool nukeUsed = false;
 	private bool isDead = false;
 	// Use this for initialization
@@ -116,10 +115,13 @@ public class Player : MonoBehaviour
 
 		rigidbody2D.fixedAngle = false;
 		rigidbody2D.drag = 2f;
-		if (lowerFlame != null ) Destroy (lowerFlame.gameObject);
-		if (upperFlame != null ) Destroy (upperFlame.gameObject);
 
 		Debug.Log ("You're brown bread!");
 
+	}
+	
+	public void LevelUp(float thrustIncrease, Gradient flames)
+	{
+		thrust += thrustIncrease;
 	}
 }
