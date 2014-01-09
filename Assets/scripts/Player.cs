@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D info)
 	{
-		if (info.relativeVelocity.magnitude > 10f)
+		if (info.relativeVelocity.magnitude > 10f && !isDead)
 						PlayerDeath();
 	}
 
@@ -123,5 +123,6 @@ public class Player : MonoBehaviour
 	public void LevelUp(float thrustIncrease, Gradient flames)
 	{
 		thrust += thrustIncrease;
+		rigidbody2D.AddForce(movement * 2f);
 	}
 }
